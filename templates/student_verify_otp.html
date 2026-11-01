@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP | CampusCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="register-container">
+    <h1>CampusCare</h1>
+    <h2>Verify Mobile Number</h2>
+    <p>Enter the six-digit OTP shown in your PyCharm terminal.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <input type="text" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" required>
+        <button type="submit">Verify & Create Account</button>
+    </form>
+
+    <a href="{{ url_for('student_send_otp') }}">Generate New OTP</a>
+</div>
+</body>
+</html>

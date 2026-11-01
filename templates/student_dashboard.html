@@ -1,0 +1,1141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #080e1c;
+            --sidebar: #0d1729;
+            --panel: #111e32;
+            --profile: #111f33;
+            --border: #20344e;
+            --accent: #55d6c2;
+            --accent-dark: #18354a;
+            --text: #e8eef8;
+            --muted: #8fa1b9;
+            --success: #61d5a4;
+            --warning: #f4c46b;
+            --info: #70c5ed;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--sidebar);
+            border-right: 1px solid #1e3049;
+            padding: 25px 17px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: 0.3s;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 10px 30px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 13px;
+            background: var(--accent);
+            color: #081a24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .brand h2 {
+            font-size: 21px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 3px;
+            letter-spacing: 1px;
+        }
+
+        .nav-heading {
+            color: #667d9a;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 25px 12px 12px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.25s;
+            flex-shrink: 0;
+        }
+
+        .nav-link i {
+            width: 19px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--accent-dark);
+            color: var(--accent);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .sidebar-user {
+            background: var(--profile);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            background: #1b766e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .sidebar-user strong {
+            font-size: 12px;
+            display: block;
+        }
+
+        .sidebar-user small {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .logout-link {
+            color: #f08080;
+        }
+
+        .logout-link:hover {
+            background: #39232d;
+            color: #ff9999;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            margin-left: 255px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .topbar h2 {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: var(--muted);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        /* WELCOME SECTION */
+
+        .welcome {
+            background: linear-gradient(110deg, #123b49, #14263e);
+            border: 1px solid #244b5b;
+            border-radius: 16px;
+            padding: 28px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+            margin-bottom: 9px;
+        }
+
+        .welcome h1 span {
+            color: var(--accent);
+        }
+
+        .welcome p {
+            color: #b5c9d6;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .welcome-icon {
+            width: 95px;
+            height: 95px;
+            min-width: 95px;
+            border-radius: 50%;
+            background: rgba(85,214,194,0.12);
+            border: 1px solid rgba(85,214,194,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 42px;
+        }
+
+        /* SECTION HEADING */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 28px 0 15px;
+        }
+
+        .section-heading h3 {
+            font-size: 16px;
+        }
+
+        .section-heading p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        /* STAT CARDS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 21px;
+            transition: 0.25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .total-icon {
+            background: #18354a;
+            color: var(--accent);
+        }
+
+        .pending-icon {
+            background: #49391d;
+            color: var(--warning);
+        }
+
+        .resolved-icon {
+            background: #153c32;
+            color: var(--success);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 750;
+            margin-top: 17px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        /* CONTENT GRID */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.65fr 1fr;
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 21px;
+            min-width: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-header h3 {
+            font-size: 15px;
+        }
+
+        .view-all {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* RECENT COMPLAINTS */
+
+        .complaint-item {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .complaint-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .complaint-title {
+            font-size: 13px;
+            font-weight: 650;
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .complaint-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .complaint-meta small {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #49391d;
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: #153c32;
+            color: var(--success);
+        }
+
+        .status-progress {
+            background: #193c55;
+            color: var(--info);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 30px;
+            color: #526a85;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 12px;
+        }
+
+        /* QUICK ACTIONS */
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #14243a;
+            transition: 0.25s;
+        }
+
+        .action-link:hover {
+            border-color: var(--accent);
+            background: #18354a;
+            transform: translateX(3px);
+        }
+
+        .action-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #1b3a4a;
+            color: var(--accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .action-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .action-text strong {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .action-text small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .action-arrow {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* DEPARTMENT COMMUNITY */
+
+        .community {
+            margin-top: 20px;
+            background: linear-gradient(110deg, #142e3e, #15283f);
+            border: 1px solid #285064;
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .community-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .community-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            background: #1b4a53;
+            color: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .community h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .community p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .community-btn {
+            background: var(--accent);
+            color: #071b22;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .community-btn:hover {
+            background: #79e7d5;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #60738d;
+            font-size: 10px;
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 22px;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                padding: 16px;
+            }
+
+            .topbar h2 {
+                font-size: 19px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+
+            .welcome h1 {
+                font-size: 21px;
+            }
+
+            .welcome-icon {
+                width: 65px;
+                height: 65px;
+                min-width: 65px;
+                font-size: 28px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+                margin-top: 10px;
+            }
+
+            .community {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .community-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .top-actions {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .welcome-icon {
+                display: none;
+            }
+
+            .complaint-meta {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">
+            <i class="fas fa-shield-heart"></i>
+        </div>
+
+        <div>
+            <h2>Campus<span>Care</span></h2>
+            <small>STUDENT PORTAL</small>
+        </div>
+    </div>
+
+    <div class="nav-heading">MAIN MENU</div>
+
+    <nav class="nav-menu">
+
+        <a href="{{ url_for('student_dashboard') }}"
+           class="nav-link active">
+            <i class="fas fa-house"></i>
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('my_complaints') }}"
+           class="nav-link">
+            <i class="fas fa-file-lines"></i>
+            My Complaints
+        </a>
+
+        <a href="{{ url_for('submit_complaint') }}"
+           class="nav-link">
+            <i class="fas fa-paper-plane"></i>
+            Sent Complaints
+        </a>
+
+        <a href="/student/department-complaints"
+           class="nav-link">
+            <i class="fas fa-users"></i>
+            Department Complaint Box
+        </a>
+
+        <a href="{{ url_for('student_profile') }}"
+           class="nav-link">
+            <i class="fas fa-user-circle"></i>
+            My Profile
+        </a>
+
+        <!-- SETTINGS: My Profile ke neeche -->
+        <a href="{{ url_for('student_settings') }}"
+           class="nav-link">
+            <i class="fas fa-gear"></i>
+            Settings
+        </a>
+
+        <a href="#notifications"
+           class="nav-link">
+            <i class="fas fa-bell"></i>
+            Notifications
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <div class="nav-heading">ACCOUNT</div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {{ session.get('name', 'S')[0]|upper }}
+            </div>
+
+            <div>
+                <strong>{{ session.get('name', 'Student') }}</strong>
+                <small>Student Account</small>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}"
+           class="nav-link logout-link">
+            <i class="fas fa-right-from-bracket"></i>
+            Logout
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div style="display:flex;align-items:center;gap:12px;">
+
+            <button class="icon-btn mobile-menu"
+                    onclick="toggleSidebar()"
+                    aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div>
+                <h2>Student Dashboard</h2>
+                <p>Manage your complaints and stay updated.</p>
+            </div>
+
+        </div>
+
+        <div class="top-actions">
+
+            <a href="#notifications"
+               class="icon-btn"
+               title="Notifications">
+                <i class="far fa-bell"></i>
+            </a>
+
+            <a href="{{ url_for('student_profile') }}"
+               class="icon-btn"
+               title="My Profile">
+                <i class="far fa-user"></i>
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- WELCOME SECTION -->
+    <section class="welcome">
+
+        <div>
+            <h1>
+                Welcome back,
+                <span>{{ session.get('name', 'Student') }}!</span>
+            </h1>
+
+            <p>
+                Welcome to CampusCare Student Portal.<br>
+                Track your complaints, check their status and
+                make your campus better.
+            </p>
+        </div>
+
+        <div class="welcome-icon">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+    <div class="section-heading">
+        <div>
+            <h3>Complaint Overview</h3>
+            <p>Your complaint activity at a glance</p>
+        </div>
+    </div>
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Total Complaints</div>
+                    <div class="stat-number">
+                        {{ total_complaints }}
+                    </div>
+                </div>
+
+                <div class="stat-icon total-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Pending Complaints</div>
+                    <div class="stat-number">
+                        {{ pending_complaints }}
+                    </div>
+                </div>
+
+                <div class="stat-icon pending-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Resolved Complaints</div>
+                    <div class="stat-number">
+                        {{ resolved_complaints }}
+                    </div>
+                </div>
+
+                <div class="stat-icon resolved-icon">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- RECENT COMPLAINTS AND QUICK ACTIONS -->
+    <section class="content-grid">
+
+        <!-- RECENT COMPLAINTS -->
+        <div class="panel">
+
+            <div class="panel-header">
+                <h3>
+                    <i class="fas fa-history"
+                       style="color:var(--accent);margin-right:8px;"></i>
+                    Recent Complaints
+                </h3>
+
+                <a href="{{ url_for('my_complaints') }}"
+                   class="view-all">
+                    View All <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            {% if recent_complaints %}
+
+                {% for complaint in recent_complaints %}
+
+                    <div class="complaint-item">
+
+                        <div class="complaint-title">
+                            {{ complaint.title }}
+                        </div>
+
+                        <div class="complaint-meta">
+
+                            <small>
+                                <i class="fas fa-tag"></i>
+                                {{ complaint.category }}
+                                &nbsp; | &nbsp;
+                                <i class="far fa-calendar"></i>
+                                {{ complaint.created_at }}
+                            </small>
+
+                            {% set status =
+                                complaint.status|lower|replace('_', ' ')
+                            %}
+
+                            {% if status == 'resolved' %}
+
+                                <span class="status status-resolved">
+                                    <i class="fas fa-check-circle"></i>
+                                    Resolved
+                                </span>
+
+                            {% elif status in ['in progress', 'processing'] %}
+
+                                <span class="status status-progress">
+                                    <i class="fas fa-spinner"></i>
+                                    In Progress
+                                </span>
+
+                            {% else %}
+
+                                <span class="status status-pending">
+                                    <i class="fas fa-clock"></i>
+                                    {{ complaint.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No complaints found yet.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+        <div class="panel">
+
+            <div class="panel-header">
+                <h3>
+                    <i class="fas fa-bolt"
+                       style="color:var(--accent);margin-right:8px;"></i>
+                    Quick Access
+                </h3>
+            </div>
+
+            <div class="quick-actions">
+
+                <a href="{{ url_for('my_complaints') }}"
+                   class="action-link">
+
+                    <div class="action-icon">
+                        <i class="fas fa-file-pen"></i>
+                    </div>
+
+                    <div class="action-text">
+                        <strong>My Complaints</strong>
+                        <small>Edit, delete and track your complaints</small>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+                </a>
+
+
+                <a href="{{ url_for('my_complaints') }}"
+                   class="action-link">
+
+                    <div class="action-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+
+                    <div class="action-text">
+                        <strong>Sent Complaints</strong>
+                        <small>Check the complaints you have submitted</small>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+                </a>
+
+
+                <a href="{{ url_for('student_profile') }}"
+                   class="action-link">
+
+                    <div class="action-icon">
+                        <i class="fas fa-user-gear"></i>
+                    </div>
+
+                    <div class="action-text">
+                        <strong>My Profile</strong>
+                        <small>View your student account details</small>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+                </a>
+
+
+                <a href="#notifications"
+                   class="action-link">
+
+                    <div class="action-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+
+                    <div class="action-text">
+                        <strong>Notifications</strong>
+                        <small>Stay updated about complaint activity</small>
+                    </div>
+
+                    <i class="fas fa-chevron-right action-arrow"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DEPARTMENT COMMUNITY -->
+    <section class="community">
+
+        <div class="community-content">
+
+            <div class="community-icon">
+                <i class="fas fa-people-group"></i>
+            </div>
+
+            <div>
+                <h3>Department Complaint Box</h3>
+
+                <p>
+                    View complaints submitted by students of your department.
+                    Support important issues by voting.
+                </p>
+            </div>
+
+        </div>
+
+        <a href="/student/department-complaints"
+           class="community-btn">
+            Explore Complaints
+            <i class="fas fa-arrow-right"></i>
+        </a>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        © 2026 CampusCare | Student Portal
+        <br>
+        Making Campus Better Together
+    </footer>
+
+</main>
+
+
+<script>
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener("click", function(event) {
+        const sidebar = document.getElementById("sidebar");
+        const menuButton = document.querySelector(".mobile-menu");
+
+        if (
+            window.innerWidth <= 850 &&
+            sidebar.classList.contains("show") &&
+            !sidebar.contains(event.target) &&
+            menuButton &&
+            !menuButton.contains(event.target)
+        ) {
+            sidebar.classList.remove("show");
+        }
+    });
+</script>
+
+</body>
+</html>

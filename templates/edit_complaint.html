@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Complaint | CampusCare</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: #080e1c;
+            color: #e8eef8;
+        }
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #0d1729;
+            border-right: 1px solid #1e3049;
+            padding: 25px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid #1e3049;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #1b766e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 { font-size: 21px; }
+        .logo span { color: #55d6c2; }
+
+        .nav-title {
+            color: #71849e;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 25px 12px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin: 3px 0;
+            border-radius: 9px;
+            color: #8fa1b9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #18354a;
+            color: #55d6c2;
+        }
+
+        .nav-link i {
+            width: 19px;
+            text-align: center;
+        }
+
+        .sidebar-bottom { margin-top: auto; }
+
+        .main {
+            margin-left: 255px;
+            padding: 30px;
+            max-width: 1400px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            margin-bottom: 6px;
+        }
+
+        .topbar p {
+            color: #8fa1b9;
+            font-size: 13px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: #14243a;
+            border: 1px solid #20344e;
+            color: #cbd7e8;
+            padding: 11px 16px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .back-btn:hover {
+            border-color: #55d6c2;
+            color: #55d6c2;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(250px, .7fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #111e32;
+            border: 1px solid #20344e;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .panel-heading i {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #18354a;
+            color: #55d6c2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-heading h3 { font-size: 17px; }
+
+        .panel-heading p {
+            font-size: 12px;
+            color: #8fa1b9;
+            margin-top: 4px;
+        }
+
+        .form-group { margin-bottom: 21px; }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+            color: #cbd7e8;
+        }
+
+        .form-group label span { color: #ff8585; }
+
+        .form-control {
+            width: 100%;
+            background: #0d192b;
+            border: 1px solid #29415d;
+            border-radius: 9px;
+            padding: 13px 14px;
+            color: #e8eef8;
+            font-size: 13px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .form-control:focus {
+            border-color: #55d6c2;
+            box-shadow: 0 0 0 3px rgba(85,214,194,.08);
+        }
+
+        .form-control::placeholder { color: #687c96; }
+
+        select.form-control { cursor: pointer; }
+
+        select.form-control option {
+            background: #111e32;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 170px;
+            line-height: 1.6;
+        }
+
+        .hint {
+            color: #71849e;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #20344e;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 19px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1b766e;
+            color: white;
+        }
+
+        .btn-primary:hover { background: #228e83; }
+
+        .btn-secondary {
+            background: #1a2b42;
+            color: #b7c5d8;
+            border: 1px solid #29415d;
+        }
+
+        .btn-secondary:hover { border-color: #55d6c2; }
+
+        .info-box {
+            background: #14243a;
+            border: 1px solid #29415d;
+            border-radius: 11px;
+            padding: 17px;
+            margin-bottom: 15px;
+        }
+
+        .info-box h4 {
+            font-size: 13px;
+            margin-bottom: 9px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .info-box h4 i { color: #55d6c2; }
+
+        .info-box p {
+            color: #8fa1b9;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .status-note {
+            background: #49391d;
+            color: #f4c46b;
+            padding: 12px;
+            border-radius: 9px;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: #18354a;
+            color: #55d6c2;
+            border: 0;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        @media(max-width: 950px) {
+            .page-layout { grid-template-columns: 1fr; }
+        }
+
+        @media(max-width: 750px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .3s;
+            }
+
+            .sidebar.show { transform: translateX(0); }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .mobile-menu { display: block; }
+
+            .topbar { align-items: flex-start; }
+            .topbar h1 { font-size: 21px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2>Campus<span>Care</span></h2>
+    </div>
+
+    <div class="nav-title">STUDENT MENU</div>
+
+    <a href="{{ url_for('student_dashboard') }}" class="nav-link">
+        <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <a href="{{ url_for('my_complaints') }}" class="nav-link active">
+        <i class="fa-solid fa-file-lines"></i> My Complaints
+    </a>
+
+    <a href="/student/sent-complaints" class="nav-link">
+        <i class="fa-solid fa-paper-plane"></i> Sent Complaints
+    </a>
+
+    <a href="/student/department-complaints" class="nav-link">
+        <i class="fa-solid fa-users"></i> Department Complaint Box
+    </a>
+
+    <a href="{{ url_for('student_profile') }}" class="nav-link">
+        <i class="fa-solid fa-user"></i> My Profile
+    </a>
+
+    <a href="/student/notifications" class="nav-link">
+        <i class="fa-solid fa-bell"></i> Notifications
+    </a>
+
+    <div class="sidebar-bottom">
+        <a href="{{ url_for('logout') }}" class="nav-link">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div style="display:flex;align-items:center;gap:13px;">
+            <button class="mobile-menu" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div>
+                <h1>Edit Complaint</h1>
+                <p>Update the information of your complaint.</p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('my_complaints') }}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Complaints
+        </a>
+
+    </div>
+
+
+    <div class="page-layout">
+
+        <section class="panel">
+
+            <div class="panel-heading">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <div>
+                    <h3>Update Complaint Details</h3>
+                    <p>Make changes to your submitted complaint</p>
+                </div>
+            </div>
+
+            <!-- Backend route will be connected later -->
+            <form id="editComplaintForm" method="POST">
+
+                <div class="form-group">
+                    <label>Complaint Title <span>*</span></label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        class="form-control"
+                        value="{{ complaint.title|default('') }}"
+                        placeholder="Enter complaint title"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Complaint Category <span>*</span></label>
+
+                    <select name="category" id="category"
+                            class="form-control" required>
+
+                        <option value="">Select Category</option>
+
+                        {% for category in categories|default(['Classroom', 'Library', 'Hostel', 'Water Supply', 'Electricity', 'Cleanliness', 'Internet', 'Faculty', 'Other']) %}
+                            <option value="{{ category }}"
+                                {% if complaint.category|default('') == category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Complaint Description <span>*</span></label>
+
+                    <textarea
+                        name="description"
+                        id="description"
+                        class="form-control"
+                        placeholder="Explain your complaint in detail..."
+                        maxlength="2000"
+                        required>{{ complaint.description|default('') }}</textarea>
+
+                    <div class="hint">
+                        <span id="charCount">0</span>/2000 characters
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="{{ url_for('my_complaints') }}"
+                       class="btn btn-secondary">
+                        <i class="fa-solid fa-xmark"></i>
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <aside>
+
+            <div class="panel">
+
+                <div class="panel-heading">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <h3>Editing Guidelines</h3>
+                        <p>Important information</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>
+                        <i class="fa-solid fa-pen"></i>
+                        Edit Carefully
+                    </h4>
+                    <p>
+                        Make sure your complaint title and description
+                        clearly explain the problem.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h4>
+                        <i class="fa-solid fa-list-check"></i>
+                        Select Correct Category
+                    </h4>
+                    <p>
+                        Choose the category that best matches your
+                        complaint so the department can review it.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h4>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Accurate Information
+                    </h4>
+                    <p>
+                        Provide correct details. Avoid submitting
+                        misleading or incomplete information.
+                    </p>
+                </div>
+
+                <div class="status-note">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Only Pending complaints should be editable.
+                    Once the complaint is under review, editing may
+                    not be allowed.
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<script>
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+
+    const description = document.getElementById("description");
+    const charCount = document.getElementById("charCount");
+
+    function updateCount() {
+        charCount.textContent = description.value.length;
+    }
+
+    description.addEventListener("input", updateCount);
+    updateCount();
+</script>
+
+</body>
+</html>

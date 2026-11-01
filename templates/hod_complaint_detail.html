@@ -1,0 +1,1195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080e1c">
+
+    <title>HOD Complaint Details | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #080e1c;
+            --sidebar: #0d1729;
+            --panel: #111e32;
+            --panel-light: #14243a;
+            --border: #203b59;
+            --cyan: #55d6c2;
+            --text: #e8eef8;
+            --muted: #8fa1b9;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        a, button, select, textarea {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* LAYOUT */
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 255px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 25px 16px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: bold;
+            color: var(--cyan);
+            padding: 8px 12px 30px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .brand span {
+            color: white;
+        }
+
+        .menu-label {
+            color: #71839d;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            padding: 24px 12px 13px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin-bottom: 7px;
+            border-radius: 9px;
+            color: #aab9cd;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #183b4b;
+            color: var(--cyan);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            gap: 15px;
+        }
+
+        .topbar h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* PROFILE */
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--panel);
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #087f8c;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .profile-info strong {
+            font-size: 13px;
+        }
+
+        .profile small {
+            display: block;
+            color: var(--muted);
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        /* BACK BUTTON */
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+            color: var(--cyan);
+            border: 1px solid #326276;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 22px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #183b4b;
+            transform: translateX(-3px);
+        }
+
+        /* FLASH */
+
+        .flash {
+            padding: 14px 17px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .flash.success {
+            background: #153c32;
+            color: #61d5a4;
+            border: 1px solid #246b53;
+        }
+
+        .flash.error {
+            background: #542a35;
+            color: #ff9eae;
+            border: 1px solid #854052;
+        }
+
+        .flash.warning {
+            background: #49391d;
+            color: #f4c46b;
+            border: 1px solid #80632d;
+        }
+
+        .flash.info {
+            background: #193c55;
+            color: #70c5ed;
+            border: 1px solid #285c7c;
+        }
+
+        /* PANELS */
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 23px;
+            min-width: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 17px 21px;
+            background: linear-gradient(100deg, #123b49, #142b43);
+            border-bottom: 1px solid #24465c;
+        }
+
+        .panel-header i {
+            color: var(--cyan);
+            font-size: 19px;
+        }
+
+        .panel-header h3 {
+            font-size: 16px;
+        }
+
+        .panel-body {
+            padding: 22px;
+            min-width: 0;
+        }
+
+        /* DETAILS */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 22px;
+        }
+
+        .details-grid > div {
+            min-width: 0;
+        }
+
+        .student-name {
+            font-size: 21px;
+            margin-bottom: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .student-tag {
+            display: inline-block;
+            background: #173e73;
+            color: #b9d9ff;
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 17px 0;
+            color: #bdcce0;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-row i {
+            width: 19px;
+            color: var(--cyan);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .detail-row strong {
+            color: #f0f5fc;
+            margin-right: 5px;
+        }
+
+        /* COMPLAINT META */
+
+        .complaint-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .meta-box {
+            background: var(--panel-light);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #243c57;
+            min-width: 0;
+        }
+
+        .meta-box small {
+            color: var(--muted);
+            display: block;
+            margin-bottom: 9px;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-box strong {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #49391d;
+            color: #f4c46b;
+        }
+
+        .progress {
+            background: #193c55;
+            color: #70c5ed;
+        }
+
+        .resolved {
+            background: #153c32;
+            color: #61d5a4;
+        }
+
+        /* DESCRIPTION */
+
+        .description {
+            color: #d8e3f2;
+            line-height: 1.9;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            min-height: 90px;
+        }
+
+        /* REPLY SECTION */
+
+        .reply-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .reply-grid > .panel {
+            min-width: 0;
+        }
+
+        label {
+            display: block;
+            color: #dce7f5;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 17px 0 9px;
+        }
+
+        .optional {
+            color: #8294aa;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        textarea,
+        select {
+            width: 100%;
+            background: #0c192c;
+            color: var(--text);
+            border: 1px solid #405873;
+            border-radius: 9px;
+            padding: 14px;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        textarea {
+            min-height: 145px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        textarea::placeholder {
+            color: #71839d;
+        }
+
+        textarea:focus,
+        select:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px #55d6c222;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: var(--panel);
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 9px;
+            padding: 14px;
+            margin-top: 20px;
+            background: linear-gradient(100deg, #078b9c, #22c6c3);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px #087f8c55;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:focus-visible,
+        .back-btn:focus-visible,
+        .nav-link:focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 3px;
+        }
+
+        /* REPLY HISTORY */
+
+        .reply {
+            position: relative;
+            border-left: 2px solid #168f9c;
+            padding: 5px 0 20px 20px;
+            margin-left: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .reply::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 7px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--cyan);
+            border: 2px solid var(--panel);
+        }
+
+        .reply:last-child {
+            border-left-color: transparent;
+            padding-bottom: 5px;
+        }
+
+        .reply-name {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 9px;
+            color: #f0f5fc;
+        }
+
+        .reply-text {
+            color: #bdcce0;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .reply-date {
+            color: #7189a5;
+            font-size: 11px;
+            margin-top: 9px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px 15px;
+            color: #8294aa;
+            font-size: 13px;
+        }
+
+        .empty i {
+            font-size: 30px;
+            margin-bottom: 13px;
+            color: #55a8aa;
+        }
+
+        /* SUPER ADMIN REPLY */
+
+.admin-reply-card {
+    background: #14243a;
+    border: 1px solid #286078;
+    border-left: 4px solid #55d6c2;
+    border-radius: 11px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.admin-reply-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #55d6c2;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 13px;
+}
+
+.admin-reply-message {
+    color: #d8e3f2;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin-bottom: 12px;
+}
+
+.admin-reply-meta {
+    color: #8294aa;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.forward-message {
+    background: #102037;
+    border-radius: 8px;
+    padding: 13px;
+    color: #bdcce0;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    margin-bottom: 13px;
+}
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .details-grid,
+            .reply-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .main {
+                padding: 24px 18px;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 65px;
+                padding: 18px 7px;
+            }
+
+            .brand {
+                font-size: 16px;
+                text-align: center;
+                padding: 10px 3px 20px;
+            }
+
+            .brand span,
+            .menu-label,
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 14px 5px;
+            }
+
+            .nav-link i {
+                font-size: 16px;
+            }
+
+            .main {
+                margin-left: 65px;
+                width: calc(100% - 65px);
+                padding: 18px 12px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+            }
+
+            .topbar h1 {
+                font-size: 20px;
+            }
+
+            .profile {
+                padding: 7px;
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .panel-body {
+                padding: 16px;
+            }
+
+            .panel-header {
+                padding: 15px 16px;
+            }
+
+            .panel-header h3 {
+                font-size: 14px;
+            }
+
+            .student-name {
+                font-size: 18px;
+            }
+
+            .complaint-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .back-btn {
+                margin-bottom: 17px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .main {
+                padding: 15px 9px;
+            }
+
+            .topbar h1 {
+                font-size: 18px;
+            }
+
+            .panel-body {
+                padding: 13px;
+            }
+
+            textarea {
+                min-height: 125px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% set hod_name = session.get('name') or 'HOD' %}
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>CampusCare</span>
+        </div>
+
+        <div class="menu-label">MAIN MENU</div>
+
+        <a href="{{ url_for('hod_dashboard') }}"
+           class="nav-link"
+           title="Dashboard">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('hod_complaints') }}"
+           class="nav-link active"
+           title="Complaint Inbox">
+            <i class="fa-solid fa-inbox"></i>
+            <span>Complaint Inbox</span>
+        </a>
+
+        <a href="{{ url_for('hod_dashboard') }}#student-approvals"
+           class="nav-link"
+           title="Student Approval">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Student Approval</span>
+        </a>
+
+        <a href="{{ url_for('hod_dashboard') }}#students"
+           class="nav-link"
+           title="Student Management">
+            <i class="fa-solid fa-users"></i>
+            <span>Student Management</span>
+        </a>
+
+        <a href="{{ url_for('hod_dashboard') }}#faculty"
+           class="nav-link"
+           title="Faculty Management">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Faculty Management</span>
+        </a>
+
+        <div class="menu-label">ACCOUNT</div>
+
+        <a href="{{ url_for('logout') }}"
+           class="nav-link"
+           title="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Complaint Details</h1>
+                <p>Review, respond and manage student complaints</p>
+            </div>
+
+            <div class="profile">
+
+                <div class="avatar">
+                    {{ hod_name[:1]|upper }}
+                </div>
+
+                <div class="profile-info">
+                    <strong>{{ hod_name }}</strong>
+                    <small>Head of Department</small>
+                </div>
+
+            </div>
+
+        </header>
+
+        <a href="{{ url_for('hod_complaints') }}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Complaint Inbox
+        </a>
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- STUDENT AND COMPLAINT INFORMATION -->
+        <section class="panel">
+
+            <div class="panel-body">
+
+                <div class="details-grid">
+
+                    <!-- STUDENT INFORMATION -->
+                    <div>
+
+                        <div class="panel-header"
+                             style="border-radius:9px; margin-bottom:20px;">
+
+                            <i class="fa-solid fa-user"></i>
+                            <h3>Student Information</h3>
+
+                        </div>
+
+                        <h2 class="student-name">
+                            {{ complaint.student_name or 'Student' }}
+                            <span class="student-tag">Student</span>
+                        </h2>
+
+                        <div class="detail-row">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <strong>Email:</strong>
+                                {{ complaint.student_email or 'Not available' }}
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <i class="fa-solid fa-id-card"></i>
+                            <div>
+                                <strong>Admission No:</strong>
+                                {{ complaint.admission_no or 'Not available' }}
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <div>
+                                <strong>Course:</strong>
+                                {{ complaint.course or 'Not updated' }}
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div>
+                                <strong>Section:</strong>
+                                {{ complaint.section or 'Not updated' }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- COMPLAINT INFORMATION -->
+                    <div>
+
+                        <div class="panel-header"
+                             style="border-radius:9px; margin-bottom:20px;">
+
+                            <i class="fa-solid fa-file-lines"></i>
+                            <h3>Complaint Information</h3>
+
+                        </div>
+
+                        <div class="complaint-meta">
+
+                            <div class="meta-box">
+                                <small>COMPLAINT ID</small>
+                                <strong>#{{ complaint.id }}</strong>
+                            </div>
+
+                            <div class="meta-box">
+                                <small>CATEGORY</small>
+                                <strong>{{ complaint.category or 'General' }}</strong>
+                            </div>
+
+                            <div class="meta-box">
+                                <small>COMPLAINT TITLE</small>
+                                <strong>{{ complaint.title or 'Untitled Complaint' }}</strong>
+                            </div>
+
+                            <div class="meta-box">
+                                <small>SUBMITTED ON</small>
+                                <strong>{{ complaint.created_at or 'Not available' }}</strong>
+                            </div>
+
+                            <div class="meta-box">
+                                <small>CURRENT STATUS</small>
+
+                                {% if complaint.status == 'Resolved' %}
+
+                                    <span class="status resolved">
+                                        Resolved
+                                    </span>
+
+                                {% elif complaint.status == 'In Progress' %}
+
+                                    <span class="status progress">
+                                        In Progress
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status pending">
+                                        {{ complaint.status or 'Pending' }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- COMPLAINT DESCRIPTION -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <i class="fa-solid fa-message"></i>
+                <h3>Complaint Description</h3>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="description">
+                    {{ complaint.description or 'No description provided.' }}
+                </div>
+
+            </div>
+
+        </section>
+
+
+<!-- FORWARD COMPLAINT TO SUPER ADMIN -->
+<section class="panel">
+
+    <div class="panel-header">
+        <i class="fa-solid fa-share-from-square"></i>
+        <h3>Forward Complaint to Super Admin</h3>
+    </div>
+
+    <div class="panel-body">
+
+        <p style="color:#8fa1b9; font-size:13px; line-height:1.7; margin-bottom:15px;">
+            If this complaint requires higher-level attention,
+            forward it to the Super Admin with a proper explanation.
+        </p>
+
+        <form
+            method="POST"
+            action="{{ url_for('hod_forward_complaint', complaint_id=complaint.id) }}"
+        >
+
+            <label for="forward-message">
+                Forwarding Reason
+            </label>
+
+            <textarea
+                id="forward-message"
+                name="message"
+                maxlength="3000"
+                required
+                placeholder="Explain why you are forwarding this complaint to the Super Admin..."
+            ></textarea>
+
+            <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-share"></i>
+                Forward to Super Admin
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+        <!-- REPLY AND HISTORY -->
+
+<!-- SUPER ADMIN FORWARDING & REPLY HISTORY -->
+<section class="panel">
+
+    <div class="panel-header">
+        <i class="fa-solid fa-shield-halved"></i>
+        <h3>Super Admin Communication</h3>
+    </div>
+
+    <div class="panel-body">
+
+        {% if forward_history %}
+
+            {% for f in forward_history %}
+
+                <div class="admin-reply-card">
+
+                    <div class="admin-reply-heading">
+                        <i class="fa-solid fa-share-from-square"></i>
+                        Complaint Forwarded to Super Admin
+                    </div>
+
+                    <div class="admin-reply-meta">
+                        <strong>Forwarded by:</strong>
+                        {{ f.hod_name or 'HOD' }}
+                        <br>
+
+                        <strong>Forwarded on:</strong>
+                        {{ f.forwarded_at }}
+                    </div>
+
+                    <label>HOD Forwarding Message</label>
+
+                    <div class="forward-message">{{ f.hod_message }}</div>
+
+                    {% if f.admin_reply %}
+
+                        <div class="admin-reply-heading">
+                            <i class="fa-solid fa-reply"></i>
+                            Super Admin Response
+                        </div>
+
+                        <div class="admin-reply-message">{{ f.admin_reply }}</div>
+
+                        <div class="admin-reply-meta">
+                            <strong>Replied by:</strong>
+                            {{ f.admin_name or 'Super Admin' }}
+                            <br>
+
+                            <strong>Reply date:</strong>
+                            {{ f.admin_reply_at }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            <p>Waiting for Super Admin response.</p>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+                <i class="fa-regular fa-paper-plane"></i>
+                <p>This complaint has not been forwarded to Super Admin.</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+        <section class="reply-grid">
+
+            <!-- REPLY FORM -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <i class="fa-solid fa-reply"></i>
+                    <h3>Reply & Update Status</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <form method="POST">
+
+                        <label for="reply">
+                            HOD Response
+                            <span class="optional">(Optional)</span>
+                        </label>
+
+                        <textarea
+                            id="reply"
+                            name="reply"
+                            maxlength="3000"
+                            placeholder="Write a professional response to the student..."
+                        ></textarea>
+
+                        <label for="status">
+                            Update Complaint Status
+                        </label>
+
+                        <select name="status" id="status" required>
+
+                            <option value="Pending"
+                                {% if complaint.status == 'Pending' %}selected{% endif %}>
+                                Pending
+                            </option>
+
+                            <option value="In Progress"
+                                {% if complaint.status == 'In Progress' %}selected{% endif %}>
+                                In Progress
+                            </option>
+
+                            <option value="Resolved"
+                                {% if complaint.status == 'Resolved' %}selected{% endif %}>
+                                Resolved
+                            </option>
+
+                        </select>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Submit Reply & Update
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- REPLY HISTORY -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h3>Reply History</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    {% if replies %}
+
+                        {% for r in replies %}
+
+                            <div class="reply">
+
+                                <div class="reply-name">
+                                    <i class="fa-solid fa-user-circle"
+                                       style="color:#55d6c2; margin-right:6px;"></i>
+
+                                    {{ r.responder_name or 'CampusCare Representative' }}
+                                </div>
+
+                                <div class="reply-text">
+                                    {{ r.reply }}
+                                </div>
+
+                                <div class="reply-date">
+                                    <i class="fa-regular fa-clock"></i>
+                                    {{ r.created_at }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="empty">
+
+                            <i class="fa-regular fa-comments"></i>
+
+                            <p>No replies have been added yet.</p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

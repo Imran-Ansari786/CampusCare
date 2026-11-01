@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare | College Grievance Portal</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">Campus<span>Care</span></div>
+    <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
+</nav>
+
+<main class="hero">
+    <div class="hero-content">
+        <div class="tag">SMART COLLEGE GRIEVANCE SYSTEM</div>
+
+        <h1>Your Voice.<br>
+            <span>Our Campus.</span>
+        </h1>
+
+        <p>
+            A smarter way to report college problems,
+            connect with your HOD and make your campus better.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="{{ url_for('login') }}" class="primary-btn">
+                Get Started →
+            </a>
+            <a href="#features" class="secondary-btn">
+                Explore Features
+            </a>
+        </div>
+
+        <div class="trust">
+            <div><strong>01</strong><small>Report Problems</small></div>
+            <div><strong>02</strong><small>Connect with HOD</small></div>
+            <div><strong>03</strong><small>Track Solutions</small></div>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="visual-card">
+            <div class="visual-icon">✦</div>
+            <h2>Better Campus,<br>Better Future.</h2>
+            <p>Every complaint matters. Every voice counts.</p>
+            <div class="visual-line"></div>
+            <div class="visual-footer">
+                <span>CampusCare Portal</span>
+                <span>● Online</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<section id="features" class="features">
+    <div class="section-heading">
+        <span>OUR SERVICES</span>
+        <h2>How can we help you?</h2>
+        <p>Report issues from different areas of your college.</p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">📚<h3>Academic</h3>
+            <p>Classes, timetable and academic issues.</p></div>
+        <div class="feature-card">🚌<h3>Transport</h3>
+            <p>Bus, routes and transport issues.</p></div>
+        <div class="feature-card">💻<h3>Laboratory</h3>
+            <p>Equipment and lab facilities.</p></div>
+        <div class="feature-card">📖<h3>Library</h3>
+            <p>Books and library facilities.</p></div>
+        <div class="feature-card">🍽️<h3>Canteen</h3>
+            <p>Food quality and hygiene.</p></div>
+        <div class="feature-card">🏠<h3>Hostel</h3>
+            <p>Rooms and hostel facilities.</p></div>
+        <div class="feature-card">👨‍🏫<h3>Faculty</h3>
+            <p>Faculty-related concerns.</p></div>
+    </div>
+</section>
+
+<footer>
+    © 2026 CampusCare | Smart College Grievance Portal
+</footer>
+
+</body>
+</html>

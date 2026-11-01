@@ -1,0 +1,1045 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: #080e1c;
+            color: #e8eef8;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #0d1729;
+            border-right: 1px solid #1e3049;
+            padding: 25px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: .3s;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid #1e3049;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #1b766e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo h2 { font-size: 21px; }
+        .logo span { color: #55d6c2; }
+
+        .nav-title {
+            color: #71849e;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 25px 12px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin: 3px 0;
+            border-radius: 9px;
+            color: #8fa1b9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #18354a;
+            color: #55d6c2;
+        }
+
+        .nav-link i {
+            width: 19px;
+            text-align: center;
+        }
+
+        .sidebar-bottom { margin-top: auto; }
+
+        .logout { color: #f08080; }
+
+        .main {
+            margin-left: 255px;
+            padding: 30px;
+            max-width: 1450px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            margin-bottom: 6px;
+        }
+
+        .topbar p {
+            color: #8fa1b9;
+            font-size: 13px;
+        }
+
+        .profile-hero {
+            background: linear-gradient(115deg, #123b49, #14263e);
+            border: 1px solid #245064;
+            border-radius: 16px;
+            padding: 27px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #1b766e;
+            border: 4px solid rgba(255,255,255,.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .profile-info h2 {
+            font-size: 23px;
+            margin-bottom: 6px;
+        }
+
+        .profile-info p {
+            color: #a7c3d1;
+            font-size: 13px;
+            margin-top: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .account-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 13px;
+            border-radius: 30px;
+            background: #153c32;
+            color: #61d5a4;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(250px, .7fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: #111e32;
+            border: 1px solid #20344e;
+            border-radius: 14px;
+            padding: 23px;
+            margin-bottom: 20px;
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .panel-heading > i {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #18354a;
+            color: #55d6c2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .panel-heading h3 { font-size: 16px; }
+
+        .panel-heading p {
+            color: #8fa1b9;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #14243a;
+            border: 1px solid #20344e;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 0;
+        }
+
+        .detail-box small {
+            display: block;
+            color: #8fa1b9;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .detail-box strong {
+            color: #e8eef8;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-box i {
+            color: #55d6c2;
+            margin-right: 6px;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #20344e;
+            font-size: 12px;
+        }
+
+        .account-item:last-child { border-bottom: none; }
+
+        .account-item span { color: #8fa1b9; }
+        .account-item strong { color: #e8eef8; }
+
+        .status-active { color: #61d5a4 !important; }
+
+        .profile-note {
+            background: #14243a;
+            border: 1px solid #29445a;
+            border-left: 3px solid #55d6c2;
+            border-radius: 9px;
+            padding: 16px;
+            color: #8fa1b9;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: #18354a;
+            color: #55d6c2;
+            border: 0;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: linear-gradient(100deg, #078b9c, #22c6c3);
+            color: white;
+            border: none;
+            padding: 12px 19px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px #087f8c55;
+        }
+
+        .edit-form {
+            display: none;
+            margin-bottom: 22px;
+        }
+
+        .edit-form.show { display: block; }
+
+        .form-group { margin-bottom: 17px; }
+
+        .form-group label {
+            display: block;
+            color: #dce7f5;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .edit-form input,
+        .edit-form textarea {
+            width: 100%;
+            background: #0c192c;
+            color: #e8eef8;
+            border: 1px solid #405873;
+            border-radius: 9px;
+            padding: 13px;
+            margin-top: 5px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .edit-form input:focus,
+        .edit-form textarea:focus {
+            border-color: #55d6c2;
+            box-shadow: 0 0 0 3px #55d6c222;
+        }
+
+        .edit-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .edit-form input[type="file"] {
+            cursor: pointer;
+        }
+
+        .form-hint {
+            display: block;
+            color: #8fa1b9;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .save-btn,
+        .back-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .save-btn {
+            background: #159c91;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #18b5a7;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background: #293b52;
+            color: white;
+        }
+
+        .back-btn:hover { background: #3a506c; }
+
+        .flash-message {
+            padding: 13px 16px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .flash-message.error {
+            background: #45242b;
+            color: #ffaaaa;
+            border: 1px solid #70343e;
+        }
+
+        .flash-message.success {
+            background: #153c32;
+            color: #61d5a4;
+            border: 1px solid #24634f;
+        }
+
+        @media(max-width: 950px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        @media(max-width: 750px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .3s;
+            }
+
+            .sidebar.show { transform: translateX(0); }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .mobile-menu { display: block; }
+            .topbar { align-items: flex-start; }
+            .topbar h1 { font-size: 21px; }
+        }
+
+        @media(max-width: 480px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .profile-hero { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2>Campus<span>Care</span></h2>
+    </div>
+
+    <div class="nav-title">STUDENT MENU</div>
+
+    <a href="{{ url_for('student_dashboard') }}" class="nav-link">
+        <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <a href="{{ url_for('my_complaints') }}" class="nav-link">
+        <i class="fa-solid fa-file-lines"></i> My Complaints
+    </a>
+
+    <a href="/student/sent-complaints" class="nav-link">
+        <i class="fa-solid fa-paper-plane"></i> Sent Complaints
+    </a>
+
+    <a href="{{ url_for('department_complaints') }}" class="nav-link">
+        <i class="fa-solid fa-users"></i> Department Complaint Box
+    </a>
+
+    <a href="{{ url_for('student_profile') }}" class="nav-link active">
+        <i class="fa-solid fa-user"></i> My Profile
+    </a>
+
+    <a href="/student/notifications" class="nav-link">
+        <i class="fa-solid fa-bell"></i> Notifications
+    </a>
+
+    <div class="sidebar-bottom">
+        <a href="{{ url_for('logout') }}" class="nav-link logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div style="display:flex;align-items:center;gap:13px;">
+
+            <button class="mobile-menu"
+                    type="button"
+                    onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div>
+                <h1>My Profile</h1>
+                <p>View your personal and academic information.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FLASH / ERROR MESSAGES -->
+
+    {% if error %}
+        <div class="flash-message error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <!-- PROFILE HERO -->
+
+    <section class="profile-hero">
+
+        <div class="avatar">
+
+            {% if student.profile_photo %}
+                <img src="{{ url_for('static', filename='uploads/profile_photos/' ~ student.profile_photo) }}"
+                     alt="Profile Photo">
+            {% else %}
+                {{ (student.name|default(session.get('name', 'S')))[0]|upper }}
+            {% endif %}
+
+        </div>
+
+        <div class="profile-info">
+
+            <h2>{{ student.name|default(session.get('name', 'Student')) }}</h2>
+
+            <p>
+                <i class="fa-solid fa-graduation-cap"></i>
+                {{ student.course|default(student.department|default('Student')) }}
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                {{ student.email|default('Email not available') }}
+            </p>
+
+        </div>
+
+        <div class="account-badge">
+            <i class="fa-solid fa-circle-check"></i>
+            {{ student.account_status|default('Active')|title }}
+        </div>
+
+        <button type="button"
+                class="edit-btn"
+                onclick="openEditForm()">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Edit Profile
+        </button>
+
+    </section>
+
+
+    <!-- EDIT PROFILE FORM -->
+
+    <section class="panel edit-form" id="editForm">
+
+        <div class="panel-heading">
+            <i class="fa-solid fa-user-pen"></i>
+
+            <div>
+                <h3>Edit Your Profile</h3>
+                <p>Update your personal and academic details</p>
+            </div>
+        </div>
+
+
+        <form method="POST"
+              action="{{ url_for('student_profile') }}"
+              enctype="multipart/form-data">
+
+            <div class="details-grid">
+
+                <div class="form-group">
+
+                    <label for="mobile">Mobile Number</label>
+
+                    <input type="tel"
+                           id="mobile"
+                           name="mobile"
+                           value="{{ student.mobile|default('', true) }}"
+                           placeholder="Enter mobile number"
+                           required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="semester">Semester</label>
+
+                    <input type="text"
+                           id="semester"
+                           name="semester"
+                           value="{{ student.semester|default('', true) }}"
+                           placeholder="Enter semester"
+                           required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="section">Section</label>
+
+                    <input type="text"
+                           id="section"
+                           name="section"
+                           value="{{ student.section|default('', true) }}"
+                           placeholder="Enter section"
+                           required>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="address">Address</label>
+
+                <textarea id="address"
+                          name="address"
+                          placeholder="Enter your address"
+                          required>{{ student.address|default('', true) }}</textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="about_me">About Me</label>
+
+                <textarea id="about_me"
+                          name="about_me"
+                          placeholder="Write something about yourself...">{{ student.about_me|default('', true) }}</textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="profile_photo">
+                    <i class="fa-solid fa-camera"></i>
+                    Profile Photo
+                </label>
+
+                <input type="file"
+                       id="profile_photo"
+                       name="profile_photo"
+                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+
+                <small class="form-hint">
+                    Allowed formats: JPG, JPEG, PNG and WEBP.
+                </small>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button type="submit" class="save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Changes
+                </button>
+
+                <button type="button"
+                        class="back-btn"
+                        onclick="closeEditForm()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <div class="grid">
+
+        <div>
+
+            <!-- PERSONAL INFORMATION -->
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <i class="fa-solid fa-user"></i>
+
+                    <div>
+                        <h3>Personal Information</h3>
+                        <p>Your registered personal details</p>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-user"></i>
+                            Full Name
+                        </small>
+
+                        <strong>
+                            {{ student.name|default(session.get('name', 'Not available')) }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-envelope"></i>
+                            Email Address
+                        </small>
+
+                        <strong>
+                            {{ student.email|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-phone"></i>
+                            Mobile Number
+                        </small>
+
+                        <strong>
+                            {{ student.mobile|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-id-card"></i>
+                            Student ID
+                        </small>
+
+                        <strong>
+                            {{ student.id|default(session.get('user_id', 'Not available')) }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ACADEMIC INFORMATION -->
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <i class="fa-solid fa-book-open"></i>
+
+                    <div>
+                        <h3>Academic Information</h3>
+                        <p>Your college and department details</p>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-building"></i>
+                            Department
+                        </small>
+
+                        <strong>
+                            {{ student.department|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-book"></i>
+                            Course
+                        </small>
+
+                        <strong>
+                            {{ student.course|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-calendar"></i>
+                            Semester
+                        </small>
+
+                        <strong>
+                            {{ student.semester|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-building-columns"></i>
+                            College ID
+                        </small>
+
+                        <strong>
+                            {{ student.college_id|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-layer-group"></i>
+                            Section
+                        </small>
+
+                        <strong>
+                            {{ student.section|default('Not available') }}
+                        </strong>
+                    </div>
+
+
+                    <div class="detail-box">
+                        <small>
+                            <i class="fa-solid fa-location-dot"></i>
+                            Address
+                        </small>
+
+                        <strong>
+                            {{ student.address|default('Not available') }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN -->
+
+        <div>
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+                        <h3>Account Information</h3>
+                        <p>Your CampusCare account</p>
+                    </div>
+                </div>
+
+
+                <div class="account-item">
+                    <span>Account Status</span>
+
+                    <strong class="status-active">
+                        {{ student.account_status|default('Active')|title }}
+                    </strong>
+                </div>
+
+
+                <div class="account-item">
+                    <span>Account Type</span>
+                    <strong>Student</strong>
+                </div>
+
+
+                <div class="account-item">
+                    <span>Department</span>
+
+                    <strong>
+                        {{ student.department|default('N/A') }}
+                    </strong>
+                </div>
+
+
+                <div class="account-item">
+                    <span>Verification</span>
+
+                    <strong>
+                        {% if student.college_id_verified|default(false) %}
+                            Verified
+                        {% else %}
+                            Pending
+                        {% endif %}
+                    </strong>
+                </div>
+
+            </section>
+
+
+            <div class="profile-note">
+
+                <i class="fa-solid fa-circle-info"
+                   style="color:#55d6c2;"></i>
+
+                <strong style="color:#e8eef8;">
+                    Profile Information
+                </strong>
+
+                <p style="margin-top:8px;">
+                    Your profile information is displayed from your
+                    registered CampusCare account. If any information
+                    is incorrect, contact your department administrator.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    function toggleSidebar() {
+
+        document.getElementById("sidebar")
+            .classList.toggle("show");
+
+    }
+
+
+    function openEditForm() {
+
+        const form = document.getElementById("editForm");
+
+        form.classList.add("show");
+
+        form.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    }
+
+
+    function closeEditForm() {
+
+        const form = document.getElementById("editForm");
+
+        form.classList.remove("show");
+
+        document.querySelector(".profile-hero")
+            .scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+    }
+
+
+    // Close mobile sidebar when clicking outside
+
+    document.addEventListener("click", function(event) {
+
+        const sidebar = document.getElementById("sidebar");
+
+        const menu = document.querySelector(".mobile-menu");
+
+        if (
+            window.innerWidth <= 750 &&
+            sidebar.classList.contains("show") &&
+            !sidebar.contains(event.target) &&
+            menu &&
+            !menu.contains(event.target)
+        ) {
+
+            sidebar.classList.remove("show");
+
+        }
+
+    });
+
+
+    // Profile photo preview validation
+
+    document.getElementById("profile_photo")
+        .addEventListener("change", function() {
+
+            const file = this.files[0];
+
+            if (!file) return;
+
+            const allowed = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowed.includes(file.type)) {
+
+                alert("Only JPG, JPEG, PNG and WEBP images are allowed.");
+
+                this.value = "";
+
+            }
+
+        });
+
+</script>
+
+</body>
+</html>

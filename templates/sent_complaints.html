@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sent Complaints | CampusCare</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#080e1c;--sidebar:#0d1729;--panel:#111e32;
+--border:#20344e;--accent:#55d6c2;--text:#e8eef8;
+--muted:#8fa1b9;--warning:#f4c46b;--success:#61d5a4;
+--info:#70c5ed;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:inherit}
+
+.sidebar{
+width:255px;height:100vh;position:fixed;top:0;left:0;
+background:var(--sidebar);border-right:1px solid var(--border);
+padding:25px 17px;display:flex;flex-direction:column;z-index:100;
+transition:.3s
+}
+.brand{display:flex;align-items:center;gap:12px;padding:5px 10px 30px;border-bottom:1px solid var(--border)}
+.brand-icon{width:43px;height:43px;border-radius:13px;background:var(--accent);color:#081a24;display:flex;align-items:center;justify-content:center;font-size:21px}
+.brand h2{font-size:21px}.brand h2 span{color:var(--accent)}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.nav-heading{color:#667d9a;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:25px 12px 12px}
+.nav-menu{display:flex;flex-direction:column;gap:7px}
+.nav-link{display:flex;align-items:center;gap:13px;padding:13px 14px;border-radius:9px;color:var(--muted);font-size:13px;font-weight:600}
+.nav-link i{width:19px;text-align:center}
+.nav-link:hover,.nav-link.active{background:#18354a;color:var(--accent)}
+.sidebar-bottom{margin-top:auto}
+.sidebar-user{background:#111f33;border:1px solid var(--border);border-radius:12px;padding:13px;display:flex;align-items:center;gap:10px;margin-bottom:15px}
+.avatar{width:37px;height:37px;border-radius:50%;background:#1b766e;display:flex;align-items:center;justify-content:center;font-weight:700}
+.sidebar-user strong{font-size:12px;display:block}
+.sidebar-user small{color:var(--muted);font-size:10px}
+.logout{color:#f08080}
+
+.main{margin-left:255px;padding:30px;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.topbar h1{font-size:24px}
+.topbar p{font-size:12px;color:var(--muted);margin-top:6px}
+.top-actions{display:flex;gap:10px}
+.icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;color:var(--muted)}
+.mobile-menu{display:none}
+
+.hero{
+background:linear-gradient(110deg,#123b49,#14263e);
+border:1px solid #244b5b;border-radius:15px;padding:25px;
+display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:23px
+}
+.hero h2{font-size:21px;margin-bottom:8px}
+.hero p{font-size:12px;color:#b5c9d6;line-height:1.7}
+.hero-icon{width:58px;height:58px;border-radius:14px;background:#1b4a53;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:17px}
+.stat i{float:right;color:var(--accent)}
+.stat small{font-size:11px;color:var(--muted)}
+.stat h2{font-size:25px;margin-top:9px}
+
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:21px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+.panel-head h3{font-size:16px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.search{flex:1;min-width:180px;position:relative}
+.search i{position:absolute;left:13px;top:14px;color:var(--muted)}
+.search input,.filters select{
+height:42px;width:100%;background:#0d192b;border:1px solid var(--border);
+border-radius:8px;color:var(--text);outline:none;padding:0 12px
+}
+.search input{padding-left:38px}
+.filters select{width:160px}
+.search input:focus,.filters select:focus{border-color:var(--accent)}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{text-align:left;color:var(--muted);font-size:10px;letter-spacing:.5px;padding:13px;border-bottom:1px solid var(--border)}
+td{padding:16px 13px;border-bottom:1px solid var(--border);font-size:12px}
+tbody tr:hover{background:#14243a}
+.complaint-name{font-weight:650}
+.complaint-id{font-size:10px;color:var(--muted);margin-top:5px}
+.category{color:var(--muted);font-size:11px}
+.status{padding:6px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.pending{background:#49391d;color:var(--warning)}
+.resolved{background:#153c32;color:var(--success)}
+.progress{background:#193c55;color:var(--info)}
+.view-btn{background:#18354a;color:var(--accent);border:1px solid #285064;border-radius:7px;padding:8px 11px;font-size:10px;cursor:pointer}
+.view-btn:hover{background:#245067}
+.empty{text-align:center;padding:45px 15px;color:var(--muted)}
+.empty i{font-size:35px;margin-bottom:13px;color:#526a85}
+.empty p{font-size:12px}
+.footer{text-align:center;color:#60738d;font-size:10px;margin-top:28px;padding:15px;border-top:1px solid var(--border)}
+
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:850px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.show{transform:translateX(0)}
+.main{margin-left:0;padding:22px}
+.mobile-menu{display:flex}
+}
+@media(max-width:600px){
+.main{padding:15px}
+.topbar h1{font-size:19px}
+.stats{grid-template-columns:1fr 1fr}
+.hero{padding:18px}
+.filters{flex-direction:column}
+.filters select{width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-icon"><i class="fas fa-shield-heart"></i></div>
+        <div><h2>Campus<span>Care</span></h2><small>STUDENT PORTAL</small></div>
+    </div>
+
+    <div class="nav-heading">MAIN MENU</div>
+    <nav class="nav-menu">
+        <a href="{{ url_for('student_dashboard') }}" class="nav-link"><i class="fas fa-house"></i>Dashboard</a>
+        <a href="{{ url_for('my_complaints') }}" class="nav-link"><i class="fas fa-file-lines"></i>My Complaints</a>
+        <a href="/student/sent-complaints" class="nav-link active"><i class="fas fa-paper-plane"></i>Sent Complaints</a>
+        <a href="/student/department-complaints" class="nav-link"><i class="fas fa-users"></i>Department Complaint Box</a>
+        <a href="{{ url_for('student_profile') }}" class="nav-link"><i class="fas fa-user-circle"></i>My Profile</a>
+        <a href="/student/notifications" class="nav-link"><i class="fas fa-bell"></i>Notifications</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="nav-heading">ACCOUNT</div>
+        <div class="sidebar-user">
+            <div class="avatar">{{ session.get('name','S')[0]|upper }}</div>
+            <div><strong>{{ session.get('name','Student') }}</strong><small>Student Account</small></div>
+        </div>
+        <a href="{{ url_for('logout') }}" class="nav-link logout"><i class="fas fa-right-from-bracket"></i>Logout</a>
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="icon-btn mobile-menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div><h1>Sent Complaints</h1><p>Track every complaint you have submitted.</p></div>
+        </div>
+        <div class="top-actions">
+            <a href="/student/notifications" class="icon-btn"><i class="far fa-bell"></i></a>
+            <a href="{{ url_for('student_profile') }}" class="icon-btn"><i class="far fa-user"></i></a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h2><i class="fas fa-paper-plane" style="color:#55d6c2"></i> Your Submission History</h2>
+            <p>Every complaint matters. Follow its journey from submission<br>to review and final resolution.</p>
+        </div>
+        <div class="hero-icon"><i class="fas fa-route"></i></div>
+    </section>
+
+    <section class="stats">
+        <div class="stat"><i class="fas fa-file-alt"></i><small>Total Sent</small><h2>{{ complaints|length if complaints is defined else 0 }}</h2></div>
+        <div class="stat"><i class="fas fa-clock" style="color:#f4c46b"></i><small>Pending</small><h2>{{ complaints|selectattr('status','equalto','Pending')|list|length if complaints is defined else 0 }}</h2></div>
+        <div class="stat"><i class="fas fa-spinner" style="color:#70c5ed"></i><small>In Progress</small><h2>{{ complaints|selectattr('status','equalto','In Progress')|list|length if complaints is defined else 0 }}</h2></div>
+        <div class="stat"><i class="fas fa-circle-check" style="color:#61d5a4"></i><small>Resolved</small><h2>{{ complaints|selectattr('status','equalto','Resolved')|list|length if complaints is defined else 0 }}</h2></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3><i class="fas fa-list" style="color:#55d6c2;margin-right:8px"></i>Submission Records</h3>
+        </div>
+
+        <div class="filters">
+            <div class="search">
+                <i class="fas fa-search"></i>
+                <input id="searchInput" type="text" placeholder="Search by complaint title..." oninput="filterRows()">
+            </div>
+            <select id="statusFilter" onchange="filterRows()">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+            </select>
+        </div>
+
+        {% if complaints is defined and complaints %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>COMPLAINT</th>
+                        <th>CATEGORY</th>
+                        <th>SUBMITTED ON</th>
+                        <th>STATUS</th>
+                        <th>DETAILS</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintRows">
+                    {% for complaint in complaints %}
+                    <tr data-title="{{ complaint.title|lower }}" data-status="{{ complaint.status|lower|replace('_',' ') }}">
+                        <td>
+                            <div class="complaint-name">{{ complaint.title }}</div>
+                            <div class="complaint-id">Complaint #{{ complaint.id }}</div>
+                        </td>
+                        <td class="category">{{ complaint.category }}</td>
+                        <td>{{ complaint.created_at }}</td>
+                        <td>
+                            {% set status=complaint.status|lower|replace('_',' ') %}
+                            {% if status == 'resolved' %}
+                            <span class="status resolved">Resolved</span>
+                            {% elif status == 'in progress' %}
+                            <span class="status progress">In Progress</span>
+                            {% else %}
+                            <span class="status pending">{{ complaint.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="view-btn" href="/student/complaint/{{ complaint.id }}">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="empty" id="noResults" style="display:none">
+            <i class="fas fa-search"></i><p>No matching records found.</p>
+        </div>
+        {% else %}
+        <div class="empty">
+            <i class="fas fa-paper-plane"></i>
+            <p>You haven't sent any complaints yet.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <footer class="footer">© 2026 CampusCare | Student Portal<br>Making Campus Better Together</footer>
+</main>
+
+<script>
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+function filterRows(){
+    const search=document.getElementById("searchInput").value.toLowerCase();
+    const status=document.getElementById("statusFilter").value.toLowerCase();
+    const rows=document.querySelectorAll("#complaintRows tr");
+    let visible=0;
+
+    rows.forEach(row=>{
+        const matchTitle=row.dataset.title.includes(search);
+        const matchStatus=!status || row.dataset.status===status;
+        row.style.display=matchTitle && matchStatus ? "" : "none";
+        if(matchTitle && matchStatus) visible++;
+    });
+
+    const noResults=document.getElementById("noResults");
+    if(noResults) noResults.style.display=visible===0 && rows.length>0 ? "block" : "none";
+}
+
+document.addEventListener("click",function(event){
+    const sidebar=document.getElementById("sidebar");
+    const menu=document.querySelector(".mobile-menu");
+    if(window.innerWidth<=850 && sidebar.classList.contains("show") &&
+       !sidebar.contains(event.target) && !menu.contains(event.target)){
+        sidebar.classList.remove("show");
+    }
+});
+</script>
+
+</body>
+</html>

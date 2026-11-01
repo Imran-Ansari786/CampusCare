@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Role Permissions | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #081426;
+            color: #e8f1ff;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 27px;
+            margin-bottom: 7px;
+        }
+
+        .heading p {
+            color: #91a6c2;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #071525;
+            background: #20d4e8;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #67e7f3;
+        }
+
+        .info-card {
+            background: #10233d;
+            border: 1px solid #1d3d5d;
+            border-radius: 13px;
+            padding: 19px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .info-card i {
+            color: #20d4e8;
+            font-size: 25px;
+        }
+
+        .info-card p {
+            color: #a8bad0;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        .role-card {
+            background: #10233d;
+            border: 1px solid #1d3d5d;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .role-header {
+            padding: 19px 22px;
+            border-bottom: 1px solid #1d3d5d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .role-header h2 {
+            font-size: 18px;
+            text-transform: capitalize;
+        }
+
+        .role-header i {
+            color: #20d4e8;
+            margin-right: 9px;
+        }
+
+        .role-label {
+            color: #20d4e8;
+            background: #12394b;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .permission-row {
+            padding: 17px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #1a304b;
+        }
+
+        .permission-row:last-child {
+            border-bottom: none;
+        }
+
+        .permission-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .permission-key {
+            color: #7891af;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .permission-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        select {
+            background: #091a2e;
+            border: 1px solid #31506e;
+            color: #e8f1ff;
+            padding: 9px 12px;
+            border-radius: 7px;
+            outline: none;
+        }
+
+        .save-btn {
+            background: #13bdd2;
+            color: #061525;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #65e5f0;
+        }
+
+        .flash {
+            padding: 13px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .flash.success {
+            background: #123d35;
+            color: #72e6bd;
+            border: 1px solid #23745e;
+        }
+
+        .flash.error {
+            background: #48232d;
+            color: #ff9eae;
+            border: 1px solid #853b4b;
+        }
+
+        .footer-note {
+            color: #8198b5;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 30px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 17px;
+            }
+
+            .heading h1 {
+                font-size: 22px;
+            }
+
+            .permission-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .permission-form {
+                width: 100%;
+            }
+
+            .permission-form select {
+                flex: 1;
+            }
+
+            .role-header {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topbar">
+
+        <div class="heading">
+            <h1>
+                <i class="fas fa-user-shield"></i>
+                Role Permissions
+            </h1>
+
+            <p>Manage access permissions for CampusCare users.</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}#security"
+   class="back-btn">
+    <i class="fas fa-arrow-left"></i>
+    Back to Security & Access
+</a>
+
+
+        </a>
+
+    </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <div class="info-card">
+
+        <i class="fas fa-shield-halved"></i>
+
+        <div>
+            <strong>Access Control Settings</strong>
+
+            <p>
+                Enable or disable individual permissions for each role.
+                Changes are saved in the database. Super Admin retains
+                full access to the platform.
+            </p>
+        </div>
+
+    </div>
+
+
+    {% for role in roles %}
+
+        <section class="role-card">
+
+            <div class="role-header">
+
+                <h2>
+                    <i class="fas fa-user-group"></i>
+                    {{ role.label }}
+                </h2>
+
+                <span class="role-label">
+                    {{ role.permissions|length }} Permissions
+                </span>
+
+            </div>
+
+
+            {% for permission in role.permissions %}
+
+                <div class="permission-row">
+
+                    <div>
+                        <div class="permission-name">
+                            {{ permission.label }}
+                        </div>
+
+                        <div class="permission-key">
+                            {{ permission.key }}
+                        </div>
+                    </div>
+
+
+                    <form method="POST"
+                          action="{{ url_for('admin_role_permissions') }}"
+                          class="permission-form">
+
+                        <input type="hidden"
+                               name="role"
+                               value="{{ role.name }}">
+
+                        <input type="hidden"
+                               name="permission_key"
+                               value="{{ permission.key }}">
+
+                        <select name="is_allowed">
+
+                            <option value="1"
+                                {% if permission.allowed %}selected{% endif %}>
+                                Allowed
+                            </option>
+
+                            <option value="0"
+                                {% if not permission.allowed %}selected{% endif %}>
+                                Denied
+                            </option>
+
+                        </select>
+
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i>
+                            Save
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endfor %}
+
+        </section>
+
+    {% endfor %}
+
+
+    <div class="footer-note">
+        CampusCare Security Management<br>
+        Role permission changes are stored in the database.
+    </div>
+
+</div>
+
+</body>
+</html>
