@@ -1,1 +1,344 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forwarded Complaints | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #080e1c;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #1e3654;
+            color: #38bdf8;
+            padding: 12px 17px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .summary {
+            background: #152238;
+            border: 1px solid #293b54;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .summary p {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .summary h2 {
+            margin-top: 10px;
+            font-size: 28px;
+            color: #38bdf8;
+        }
+
+        .complaint-card {
+            background: #152238;
+            border: 1px solid #293b54;
+            padding: 23px;
+            border-radius: 13px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 17px;
+        }
+
+        .badge {
+            background: #422f16;
+            color: #fbbf24;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .detail {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .detail strong {
+            display: block;
+            color: #e2e8f0;
+            font-size: 13px;
+            margin-top: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .message-box {
+            background: #0c192d;
+            padding: 17px;
+            border-radius: 9px;
+            margin-top: 15px;
+        }
+
+        .message-box h3 {
+            font-size: 13px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .message-box p {
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .empty {
+            background: #152238;
+            border: 1px solid #293b54;
+            padding: 45px 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .empty i {
+            font-size: 35px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            padding: 25px 0;
+        }
+
+        @media(max-width: 650px) {
+            body {
+                padding: 20px 13px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div>
+            <h1>
+                <i class="fas fa-inbox" style="color:#38bdf8;"></i>
+                Forwarded Complaints
+            </h1>
+            <p class="subtitle">
+                Complaints forwarded by HODs for Super Admin attention.
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin_dashboard') }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+
+    <div class="summary">
+        <p>Total Forwarded Complaints</p>
+        <h2>{{ forwarded_complaints|length }}</h2>
+    </div>
+
+
+    {% if forwarded_complaints %}
+
+        {% for complaint in forwarded_complaints %}
+
+            <div class="complaint-card">
+
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-file-alt"
+                           style="color:#38bdf8;"></i>
+                        {{ complaint.title }}
+                    </h2>
+
+                    <span class="badge">
+                        {{ complaint.status }}
+                    </span>
+                </div>
+
+
+                <div class="details">
+
+                    <div class="detail">
+                        Complaint ID
+                        <strong>#{{ complaint.complaint_id }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Category
+                        <strong>{{ complaint.category }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Student Name
+                        <strong>{{ complaint.student_name }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Admission Number
+                        <strong>{{ complaint.admission_no or 'Not Available' }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Student Email
+                        <strong>{{ complaint.student_email }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Department
+                        <strong>{{ complaint.department_name or 'Not Assigned' }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Forwarded By HOD
+                        <strong>{{ complaint.hod_name }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        HOD Email
+                        <strong>{{ complaint.hod_email }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Forwarded Date
+                        <strong>{{ complaint.forwarded_at }}</strong>
+                    </div>
+
+                    <div class="detail">
+                        Complaint Date
+                        <strong>{{ complaint.complaint_created_at }}</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="message-box">
+                    <h3>
+                        <i class="fas fa-align-left"></i>
+                        Complaint Description
+                    </h3>
+
+                    <p>{{ complaint.description }}</p>
+                </div>
+
+
+                <div class="message-box">
+                    <h3>
+                        <i class="fas fa-comment-dots"></i>
+                        Message From HOD
+                    </h3>
+
+                    <p>{{ complaint.hod_message }}</p>
+                </div>
+                <div style="margin-top:20px;">
+
+    <a href="{{ url_for(
+        'admin_forwarded_complaint_detail',
+        forward_id=complaint.forward_id
+    ) }}"
+       style="
+        display:inline-block;
+        background:#0284c7;
+        color:white;
+        padding:12px 18px;
+        border-radius:8px;
+        text-decoration:none;
+        font-size:12px;
+        font-weight:bold;
+       ">
+
+        <i class="fas fa-eye"></i>
+        Open Complaint Details
+
+    </a>
+
+</div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            <i class="fas fa-inbox"></i>
+            <h2>No Forwarded Complaints</h2>
+            <p>HODs have not forwarded any complaints yet.</p>
+        </div>
+
+    {% endif %}
+
+
+    <div class="footer">
+        © 2026 CampusCare | Super Admin Panel
+    </div>
+
+</body>
+</html>
