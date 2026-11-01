@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register | CampusCare</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #071923;
+            color: white;
+        }
+
+        .cc-register-layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+        }
+
+        .cc-register-brand {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, #20d6b0, #079c9b 60%, #087b89);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 45px;
+            text-align: center;
+        }
+
+        .cc-register-brand::before,
+        .cc-register-brand::after {
+            content: "";
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 45%;
+            transform: rotate(35deg);
+        }
+
+        .cc-register-brand::before {
+            top: -230px;
+            left: -150px;
+        }
+
+        .cc-register-brand::after {
+            bottom: -260px;
+            right: -170px;
+            width: 520px;
+            height: 520px;
+        }
+
+        .cc-brand-content {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+        }
+
+        .cc-logo {
+            width: 105px;
+            height: 105px;
+            margin: 0 auto 25px;
+            background: #082b35;
+            clip-path: polygon(
+                25% 5%, 75% 5%, 100% 50%,
+                75% 95%, 25% 95%, 0 50%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: 800;
+            color: #35e3c0;
+            letter-spacing: 2px;
+        }
+
+        .cc-brand-content h1 {
+            font-size: 34px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .cc-brand-content h2 {
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .cc-brand-content p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #eafffb;
+        }
+
+        .cc-brand-footer {
+            position: absolute;
+            bottom: 25px;
+            z-index: 1;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .cc-register-panel {
+            background: #081923;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 45px 30px;
+        }
+
+        .cc-register-card {
+            width: 100%;
+            max-width: 470px;
+        }
+
+        .cc-register-label {
+            color: #31d9b8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 13px;
+        }
+
+        .cc-register-card h1 {
+            font-size: 35px;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 9px;
+        }
+
+        .cc-register-subtitle {
+            color: #9aadb7;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            margin-bottom: 27px;
+        }
+
+        .cc-flash {
+            padding: 11px;
+            border-radius: 7px;
+            margin-bottom: 14px;
+            text-align: center;
+            font-size: 13px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .cc-register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .cc-register-form input,
+        .cc-register-form select {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #29414d;
+            border-radius: 6px;
+            outline: none;
+            background: #102832;
+            color: white;
+            padding: 0 14px;
+            font-size: 13px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .cc-register-form input::placeholder {
+            color: #a0b0b9;
+            text-align: center;
+        }
+
+        .cc-register-form select {
+            cursor: pointer;
+            color: #dce9ed;
+        }
+
+        .cc-register-form select option {
+            background: #102832;
+            color: white;
+        }
+
+        .cc-register-form input:focus,
+        .cc-register-form select:focus {
+            border-color: #2bdcba;
+            box-shadow: 0 0 0 2px rgba(43,220,186,0.12);
+        }
+
+        .cc-field-label {
+            color: #a9bbc3;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: -8px;
+            padding-left: 3px;
+        }
+
+        .cc-password-field {
+            position: relative;
+            width: 100%;
+        }
+
+        .cc-password-field input {
+            padding-right: 65px;
+        }
+
+        .cc-password-field button {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #35dabb;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .cc-submit {
+            height: 48px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #22d9b4, #11bba9);
+            color: #05252b;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .cc-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(30,214,180,0.2);
+        }
+
+        .cc-login-link {
+            margin-top: 23px;
+            text-align: center;
+            color: #9aadb7;
+            font-size: 13px;
+        }
+
+        .cc-login-link a {
+            color: #35dabb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .cc-approval-note {
+            margin-top: 16px;
+            padding: 12px;
+            border: 1px solid rgba(43,220,186,0.2);
+            border-radius: 7px;
+            background: rgba(43,220,186,0.06);
+            color: #a9c9c8;
+            font-size: 11px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        @media (max-width: 850px) {
+            .cc-register-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cc-register-brand {
+                min-height: 280px;
+                padding: 35px 20px;
+            }
+
+            .cc-logo {
+                width: 75px;
+                height: 75px;
+                font-size: 23px;
+                margin-bottom: 15px;
+            }
+
+            .cc-brand-content h1 {
+                font-size: 27px;
+            }
+
+            .cc-brand-footer {
+                display: none;
+            }
+
+            .cc-register-panel {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .cc-register-card h1 {
+                font-size: 28px;
+            }
+
+            .cc-register-panel {
+                padding: 35px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="cc-register-layout">
+
+    <!-- LEFT BRAND PANEL -->
+    <section class="cc-register-brand">
+
+        <div class="cc-brand-content">
+
+            <div class="cc-logo">CC</div>
+
+            <h1>CAMPUSCARE</h1>
+
+            <h2>
+                IIMT UNIVERSITY AND COLLEGE<br>
+                GREATER NOIDA
+            </h2>
+
+            <p>
+                Your campus. Your voice. Your solution.
+                Register to connect with your institution
+                and make your campus experience better.
+            </p>
+
+        </div>
+
+        <div class="cc-brand-footer">
+            CAMPUSCARE © 2026
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT REGISTRATION PANEL -->
+    <main class="cc-register-panel">
+
+        <div class="cc-register-card">
+
+            <div class="cc-register-label">
+                STUDENT PORTAL · SECURE REGISTRATION
+            </div>
+
+            <h1>REGISTER</h1>
+
+            <p class="cc-register-subtitle">
+                CREATE YOUR CAMPUSCARE ACCOUNT
+            </p>
+
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="cc-flash">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+
+            <!-- REGISTRATION FORM -->
+            <form method="POST" class="cc-register-form">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    autocomplete="name"
+                    required
+                >
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="College Email Address"
+                    autocomplete="email"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="admission_no"
+                    placeholder="Admission / Roll Number"
+                    required
+                >
+
+                <div class="cc-field-label">
+                    SELECT YOUR COURSE
+                </div>
+
+                <select name="course" required>
+                    <option value="">Select Course</option>
+                    <option value="BCA">BCA</option>
+                    <option value="MCA">MCA</option>
+                    <option value="BBA">BBA</option>
+                    <option value="MBA">MBA</option>
+                    <option value="BTECH">B.Tech</option>
+                    <option value="MTECH">M.Tech</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <div class="cc-field-label">
+                    SELECT YOUR DEPARTMENT
+                </div>
+
+                <select name="department" required>
+                    <option value="">Select Department</option>
+
+                    {% for dept in departments %}
+                        <option value="{{ dept.department_name }}">
+                            {{ dept.department_name }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+
+                <div class="cc-password-field">
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="cc-password"
+                        placeholder="Create Password (minimum 8 characters)"
+                        minlength="8"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        onclick="toggleCCPassword('cc-password', this)"
+                    >
+                        SHOW
+                    </button>
+
+                </div>
+
+
+                <div class="cc-password-field">
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        id="cc-confirm-password"
+                        placeholder="Confirm Password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        onclick="toggleCCPassword('cc-confirm-password', this)"
+                    >
+                        SHOW
+                    </button>
+
+                </div>
+
+
+                <button type="submit" class="cc-submit">
+                    CREATE ACCOUNT →
+                </button>
+
+            </form>
+
+
+            <div class="cc-approval-note">
+                Your registration will be reviewed by your department HOD.
+                You can log in after your account is approved.
+            </div>
+
+
+            <p class="cc-login-link">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Sign in</a>
+            </p>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function toggleCCPassword(fieldId, button) {
+
+    const field = document.getElementById(fieldId);
+
+    if (field.type === "password") {
+
+        field.type = "text";
+        button.innerText = "HIDE";
+
+    } else {
+
+        field.type = "password";
+        button.innerText = "SHOW";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

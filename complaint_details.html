@@ -1,0 +1,485 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details | CampusCare</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1728;
+            color: #e8eef7;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #101f33;
+            border-bottom: 1px solid #263c55;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            color: #55d6c2;
+        }
+
+        .brand i {
+            margin-right: 8px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #55d6c2;
+            border: 1px solid #55d6c2;
+            padding: 10px 16px;
+            border-radius: 7px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #55d6c2;
+            color: #0b1728;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1050px;
+            margin: 35px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #91a4bc;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #13243a;
+            border: 1px solid #263c55;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #55d6c2;
+            font-size: 18px;
+            font-weight: bold;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #29445a;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .detail-item {
+            min-width: 0;
+        }
+
+        .detail-label {
+            color: #8fa1b9;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            color: #e8eef7;
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        .status-progress {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .status-resolved {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+        .description-box {
+            background: #0e1c2e;
+            border: 1px solid #29445a;
+            border-radius: 8px;
+            padding: 18px;
+            line-height: 1.8;
+            color: #d5dfeb;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .response-box {
+            background: #0e1c2e;
+            border: 1px solid #29445a;
+            border-left: 4px solid #55d6c2;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .response-label {
+            color: #55d6c2;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 13px;
+        }
+
+        .response-text {
+            color: #e8eef7;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .response-meta {
+            border-top: 1px solid #29445a;
+            margin-top: 15px;
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+            color: #8fa1b9;
+        }
+
+        .response-meta i {
+            color: #55d6c2;
+            margin-right: 5px;
+        }
+
+        .empty-response {
+            text-align: center;
+            padding: 30px 15px;
+            color: #91a4bc;
+            line-height: 1.8;
+        }
+
+        .empty-response i {
+            display: block;
+            font-size: 28px;
+            color: #55d6c2;
+            margin-bottom: 12px;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 13px 16px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .flash.success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .flash.error {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            color: #71849c;
+            font-size: 12px;
+            padding: 25px;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: 94%;
+                margin: 22px auto;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .page-heading h1 {
+                font-size: 23px;
+            }
+
+            .navbar {
+                padding: 15px 4%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-building-columns"></i>
+            CampusCare
+        </div>
+
+        <a href="{{ url_for('my_complaints') }}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to My Complaints
+        </a>
+    </nav>
+
+    <main class="container">
+
+        <!-- PAGE HEADING -->
+        <div class="page-heading">
+            <h1>
+                <i class="fa-solid fa-file-lines" style="color:#55d6c2;"></i>
+                Complaint Details
+            </h1>
+            <p>View your complaint information and department responses.</p>
+        </div>
+
+        <!-- FLASH MESSAGES -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+
+        <!-- COMPLAINT INFORMATION -->
+        <section class="card">
+
+            <div class="card-heading">
+                <i class="fa-solid fa-circle-info"></i>
+                Complaint Information
+            </div>
+
+            <div class="details-grid">
+
+                <div class="detail-item">
+                    <div class="detail-label">Complaint ID</div>
+                    <div class="detail-value">#{{ complaint.id }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Complaint Status</div>
+                    <div class="detail-value">
+
+                        {% if complaint.status == 'Resolved' %}
+                            <span class="status status-resolved">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Resolved
+                            </span>
+
+                        {% elif complaint.status == 'In Progress' %}
+                            <span class="status status-progress">
+                                <i class="fa-solid fa-spinner"></i>
+                                In Progress
+                            </span>
+
+                        {% else %}
+                            <span class="status status-pending">
+                                <i class="fa-regular fa-clock"></i>
+                                {{ complaint.status or 'Pending' }}
+                            </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Complaint Title</div>
+                    <div class="detail-value">
+                        {{ complaint.title or 'Not available' }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value">
+                        {{ complaint.category or 'Not available' }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Department</div>
+                    <div class="detail-value">
+                        {{ complaint.department or 'Not assigned' }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Submitted By</div>
+                    <div class="detail-value">
+                        {{ complaint.student_name or 'Student' }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Submitted On</div>
+                    <div class="detail-value">
+                        {{ complaint.created_at or 'Not available' }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value">
+                        {{ complaint.updated_at or 'Not available' }}
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- COMPLAINT DESCRIPTION -->
+        <section class="card">
+
+            <div class="card-heading">
+                <i class="fa-solid fa-align-left"></i>
+                Complaint Description
+            </div>
+
+            <div class="description-box">{{ complaint.description or 'No description available.' }}</div>
+
+        </section>
+
+        <!-- HOD / DEPARTMENT RESPONSES -->
+        <section class="card">
+
+            <div class="card-heading">
+                <i class="fa-solid fa-reply-all"></i>
+                HOD / Department Responses
+
+                {% if replies %}
+                    <span style="
+                        margin-left:auto;
+                        background:#1b3c4b;
+                        color:#55d6c2;
+                        padding:5px 10px;
+                        border-radius:20px;
+                        font-size:12px;
+                    ">
+                        {{ replies|length }} Reply(s)
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if replies %}
+
+                {% for r in replies %}
+
+                    <div class="response-box">
+
+                        <div class="response-label">
+                            <i class="fa-solid fa-reply"></i>
+                            DEPARTMENT RESPONSE
+                        </div>
+
+                        <div class="response-text">{{ r.reply }}</div>
+
+                        <div class="response-meta">
+
+                            <span>
+                                <i class="fa-solid fa-user"></i>
+                                Replied by:
+                                {{ r.responder_name or 'HOD' }}
+                            </span>
+
+                            <span>
+                                <i class="fa-regular fa-clock"></i>
+                                {{ r.created_at or 'Date not available' }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-response">
+                    <i class="fa-regular fa-comments"></i>
+
+                    <strong>No department response yet.</strong>
+
+                    <p>
+                        Your complaint has been submitted successfully.
+                        The HOD has not added a response yet.
+                        Please check again later.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            © {{ complaint.created_at[:4] if complaint.created_at else '2026' }}
+            CampusCare. All Rights Reserved.
+        </div>
+
+    </main>
+
+</body>
+</html>

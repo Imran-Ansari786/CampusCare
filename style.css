@@ -1,0 +1,746 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #080e1c;
+    color: #f8fafc;
+}
+
+.navbar {
+    height: 80px;
+    padding: 0 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1e293b;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: #60a5fa;
+}
+
+.nav-btn, .primary-btn, .secondary-btn {
+    text-decoration: none;
+    padding: 13px 25px;
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.nav-btn, .secondary-btn {
+    color: white;
+    border: 1px solid #334155;
+}
+
+.hero {
+    min-height: 590px;
+    padding: 80px 8%;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 50px;
+    background: radial-gradient(circle at 80% 40%, #172c55 0%, transparent 45%);
+}
+
+.tag {
+    color: #60a5fa;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 6vw, 76px);
+    line-height: 1.08;
+    letter-spacing: -4px;
+}
+
+.hero h1 span {
+    color: #60a5fa;
+}
+
+.hero-content > p {
+    color: #94a3b8;
+    line-height: 1.8;
+    max-width: 490px;
+    margin: 25px 0 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.primary-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.primary-btn:hover, .nav-btn:hover {
+    background: #3b82f6;
+}
+
+.trust {
+    display: flex;
+    gap: 35px;
+    margin-top: 55px;
+}
+
+.trust div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.trust strong {
+    font-size: 22px;
+    color: #60a5fa;
+}
+
+.trust small {
+    color: #94a3b8;
+}
+
+.hero-visual {
+    display: flex;
+    justify-content: center;
+}
+
+.visual-card {
+    width: 100%;
+    max-width: 390px;
+    padding: 40px;
+    border: 1px solid #334155;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #172b4d, #101827);
+    box-shadow: 0 25px 80px #0008;
+}
+
+.visual-icon {
+    font-size: 55px;
+    color: #60a5fa;
+    margin-bottom: 35px;
+}
+
+.visual-card h2 {
+    font-size: 32px;
+    line-height: 1.3;
+}
+
+.visual-card p {
+    color: #94a3b8;
+    margin-top: 15px;
+    line-height: 1.7;
+}
+
+.visual-line {
+    height: 1px;
+    background: #334155;
+    margin: 35px 0 20px;
+}
+
+.visual-footer {
+    display: flex;
+    justify-content: space-between;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.features {
+    padding: 75px 8%;
+    background: #0d1728;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.section-heading > span {
+    color: #60a5fa;
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: 700;
+}
+
+.section-heading h2 {
+    font-size: 35px;
+    margin: 15px 0;
+}
+
+.section-heading p, .feature-card p {
+    color: #94a3b8;
+    line-height: 1.7;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.feature-card {
+    padding: 27px;
+    background: #152238;
+    border: 1px solid #293b55;
+    border-radius: 14px;
+    font-size: 28px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: #60a5fa;
+}
+
+.feature-card h3 {
+    font-size: 17px;
+    margin: 15px 0 8px;
+}
+
+.feature-card p {
+    font-size: 13px;
+}
+
+footer {
+    padding: 25px;
+    text-align: center;
+    color: #94a3b8;
+    border-top: 1px solid #1e293b;
+}
+
+/* REGISTER PAGE */
+
+.register-container {
+    max-width: 480px;
+    margin: 45px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.register-container h1 {
+    text-align: center;
+    color: #2563eb;
+}
+
+.register-container h2,
+.register-container p {
+    text-align: center;
+}
+
+.register-container input,
+.register-container select {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.register-container button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.register-container button:hover {
+    background: #1d4ed8;
+}
+
+.flash {
+    padding: 10px;
+    border-radius: 7px;
+}
+
+.flash.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flash.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* CAMPUSCARE DARK AUTH DESIGN */
+
+.auth-body {
+    margin: 0;
+    min-height: 100vh;
+    background: #080d19;
+    color: #f1f5ff;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.auth-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    background:
+        radial-gradient(circle at 10% 10%, #172554 0, transparent 35%),
+        #080d19;
+}
+
+.auth-brand {
+    padding: 65px 9%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.brand-logo {
+    font-size: 35px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -3px;
+}
+
+.brand-logo span {
+    color: #8b7cff;
+}
+
+.brand-tag {
+    color: #8b9ab8;
+    font-size: 10px;
+    letter-spacing: 3px;
+    margin-top: 45px;
+}
+
+.auth-brand h1 {
+    font-size: clamp(38px, 5vw, 65px);
+    line-height: 1.08;
+    margin: 22px 0;
+    letter-spacing: -2px;
+}
+
+.auth-brand h1 span {
+    color: #8b7cff;
+}
+
+.brand-description {
+    max-width: 390px;
+    color: #a8b4cc;
+    line-height: 1.8;
+}
+
+.brand-features {
+    display: grid;
+    gap: 17px;
+    margin-top: 35px;
+    color: #c6d2eb;
+    font-size: 14px;
+}
+
+.brand-footer {
+    position: absolute;
+    bottom: 25px;
+    color: #65728e;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.auth-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 6%;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 510px;
+    padding: 35px;
+    background: rgba(19, 28, 48, 0.85);
+    border: 1px solid rgba(139, 124, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px);
+    text-align: center;
+}
+
+.form-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.step-label {
+    color: #9d91ff;
+}
+
+.secure-label {
+    color: #5bd6a0;
+}
+
+.progress-track {
+    height: 4px;
+    background: #28334b;
+    border-radius: 10px;
+    margin: 15px 0 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 50%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #526dff, #ae78ff);
+}
+
+.auth-card h2 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.form-subtitle {
+    color: #91a0bc;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.field-group {
+    margin-bottom: 17px;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    text-align: left;
+}
+
+.field-group label {
+    display: block;
+    color: #aab7d1;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.field-group input,
+.field-group select {
+    width: 100%;
+    height: 47px;
+    padding: 0 14px;
+    background: #101a2e;
+    border: 1px solid #293752;
+    border-radius: 9px;
+    color: #f1f5ff;
+    outline: none;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.field-group input::placeholder {
+    color: #64728d;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+    border-color: #8b7cff;
+    box-shadow: 0 0 0 3px rgba(139, 124, 255, 0.12);
+}
+
+.field-group select option {
+    background: #101a2e;
+}
+
+.field-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.password-wrap {
+    position: relative;
+}
+
+.password-wrap input {
+    padding-right: 65px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: #9d91ff;
+    border: none;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-auth-btn {
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 9px;
+    background: linear-gradient(100deg, #536dff, #9165ef);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.primary-auth-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+
+.primary-auth-btn span {
+    margin-left: 8px;
+}
+
+.auth-bottom {
+    color: #8d9bb6;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 23px;
+}
+
+.auth-bottom a {
+    color: #a99aff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-alert {
+    padding: 11px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.auth-alert.error {
+    background: #451e30;
+    color: #ff9bad;
+}
+
+.auth-alert.success {
+    background: #123b32;
+    color: #7be5b8;
+}
+
+.auth-card input,
+.auth-card select,
+.auth-card button {
+    box-sizing: border-box;
+}
+
+.auth-card input,
+.auth-card select {
+    text-align: center;
+}
+
+.auth-card input::placeholder {
+    text-align: center;
+}
+
+.auth-card select {
+    text-align-last: center;
+}
+
+.auth-card p,
+.auth-card h1,
+.auth-card h2 {
+    text-align: center;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+    .hero {
+        grid-template-columns: 1fr;
+        padding: 65px 7%;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-brand {
+        padding: 30px 7%;
+    }
+
+    .auth-brand h1 {
+        font-size: 38px;
+    }
+
+    .brand-tag {
+        margin-top: 20px;
+    }
+
+    .brand-features,
+    .brand-footer {
+        display: none;
+    }
+
+    .auth-main {
+        padding: 20px 5%;
+    }
+}
+
+@media (max-width: 500px) {
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .trust {
+        gap: 18px;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .visual-card {
+        padding: 28px;
+    }
+
+    .auth-card {
+        padding: 24px 18px;
+    }
+
+    .field-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* HOD STUDENT APPROVAL */
+
+.approval-list {
+    display: grid;
+    gap: 14px;
+}
+
+.approval-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 18px;
+    background: #14243a;
+    border: 1px solid #293d57;
+    border-radius: 12px;
+}
+
+.approval-details {
+    min-width: 0;
+}
+
+.approval-details h4 {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #f1f5f9;
+}
+
+.approval-details p {
+    color: #91a3ba;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.approval-actions {
+    display: flex;
+    gap: 9px;
+    flex-shrink: 0;
+}
+
+.approval-btn {
+    border: none;
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.approve-btn {
+    background: #145b48;
+    color: #8af0c5;
+}
+
+.approve-btn:hover {
+    background: #19765c;
+}
+
+.reject-btn {
+    background: #542a35;
+    color: #ff9eae;
+}
+
+.reject-btn:hover {
+    background: #783343;
+}
+
+.approval-count {
+    color: #f4c46b;
+    background: #49391d;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+}
+
+.approval-date {
+    color: #71839d;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+@media (max-width: 700px) {
+    .approval-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .approval-actions {
+        width: 100%;
+    }
+
+    .approval-btn {
+        flex: 1;
+    }
+}

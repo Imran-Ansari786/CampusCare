@@ -1,0 +1,756 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Complaints | CampusCare</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+--bg:#080e1c;
+--sidebar:#0d1729;
+--panel:#111e32;
+--border:#20344e;
+--accent:#55d6c2;
+--text:#e8eef8;
+--muted:#8fa1b9;
+--warning:#f4c46b;
+--success:#61d5a4;
+--info:#70c5ed;
+}
+
+body{
+font-family:'Segoe UI',Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+a{text-decoration:none;color:inherit}
+
+.sidebar{
+width:255px;
+height:100vh;
+position:fixed;
+top:0;
+left:0;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+padding:25px 17px;
+display:flex;
+flex-direction:column;
+z-index:100;
+transition:.3s;
+overflow-y:auto;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+padding:5px 10px 30px;
+border-bottom:1px solid var(--border);
+}
+
+.brand-icon{
+width:43px;height:43px;
+border-radius:13px;
+background:var(--accent);
+color:#081a24;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:21px;
+}
+
+.brand h2{font-size:21px}
+.brand h2 span{color:var(--accent)}
+.brand small{
+display:block;
+color:var(--muted);
+font-size:10px;
+margin-top:3px;
+}
+
+.nav-heading{
+color:#667d9a;
+font-size:10px;
+font-weight:700;
+letter-spacing:1.5px;
+padding:25px 12px 12px;
+}
+
+.nav-menu{display:flex;flex-direction:column;gap:7px}
+
+.nav-link{
+display:flex;
+align-items:center;
+gap:13px;
+padding:13px 14px;
+border-radius:9px;
+color:var(--muted);
+font-size:13px;
+font-weight:600;
+transition:.2s;
+flex-shrink:0;
+}
+
+.nav-link i{width:19px;text-align:center}
+
+.nav-link:hover,.nav-link.active{
+background:#18354a;
+color:var(--accent);
+}
+
+.sidebar-bottom{margin-top:auto}
+
+.sidebar-user{
+background:#111f33;
+border:1px solid var(--border);
+border-radius:12px;
+padding:13px;
+display:flex;
+align-items:center;
+gap:10px;
+margin:25px 0 15px;
+}
+
+.avatar{
+width:37px;height:37px;
+border-radius:50%;
+background:#1b766e;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+.sidebar-user strong{font-size:12px;display:block}
+.sidebar-user small{color:var(--muted);font-size:10px}
+.logout{color:#f08080}
+
+.main{
+margin-left:255px;
+padding:30px;
+min-height:100vh;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.topbar h1{font-size:24px}
+.topbar p{font-size:12px;color:var(--muted);margin-top:6px}
+.top-actions{display:flex;gap:10px}
+
+.icon-btn{
+width:40px;height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:10px;
+color:var(--muted);
+cursor:pointer;
+}
+
+.mobile-menu{display:none}
+
+.page-intro{
+background:linear-gradient(110deg,#123b49,#14263e);
+border:1px solid #244b5b;
+border-radius:15px;
+padding:23px 25px;
+margin-bottom:23px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+}
+
+.page-intro h2{font-size:20px;margin-bottom:7px}
+.page-intro p{font-size:12px;color:#b5c9d6;line-height:1.6}
+
+.intro-icon{
+width:55px;height:55px;
+border-radius:13px;
+background:#1b4a53;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:23px;
+color:var(--accent);
+}
+
+.summary{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-bottom:22px;
+}
+
+.summary-card{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:12px;
+padding:17px;
+}
+
+.summary-card small{color:var(--muted);font-size:11px}
+.summary-card h2{font-size:25px;margin-top:9px}
+.summary-card i{float:right;color:var(--accent);font-size:18px}
+
+.panel{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:14px;
+padding:21px;
+}
+
+.panel-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+margin-bottom:20px;
+}
+
+.panel-header h3{font-size:16px}
+
+.filters{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.search-box{
+flex:1;
+min-width:180px;
+position:relative;
+}
+
+.search-box i{
+position:absolute;
+left:13px;
+top:13px;
+color:var(--muted);
+}
+
+.search-box input,.filters select{
+width:100%;
+height:42px;
+background:#0d192b;
+border:1px solid var(--border);
+border-radius:8px;
+padding:0 12px;
+color:var(--text);
+outline:none;
+}
+
+.search-box input{padding-left:38px}
+
+.search-box input:focus,.filters select:focus{
+border-color:var(--accent);
+}
+
+.filters select{width:160px}
+
+.complaint-list{
+display:flex;
+flex-direction:column;
+gap:13px;
+}
+
+.complaint-card{
+border:1px solid var(--border);
+background:#14243a;
+border-radius:11px;
+padding:17px;
+transition:.2s;
+}
+
+.complaint-card:hover{border-color:#426477}
+
+.card-top{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:12px;
+}
+
+.card-top h3{
+font-size:14px;
+margin-bottom:8px;
+overflow-wrap:anywhere;
+}
+
+.category{font-size:10px;color:var(--muted)}
+
+.status{
+padding:6px 11px;
+border-radius:20px;
+font-size:10px;
+font-weight:700;
+white-space:nowrap;
+}
+
+.pending{background:#49391d;color:var(--warning)}
+.resolved{background:#153c32;color:var(--success)}
+.progress{background:#193c55;color:var(--info)}
+
+.description{
+font-size:12px;
+line-height:1.7;
+color:#aebed1;
+margin:13px 0;
+overflow-wrap:anywhere;
+}
+
+.card-footer{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+border-top:1px solid var(--border);
+padding-top:13px;
+}
+
+.date{font-size:10px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.action-btn{
+border:1px solid var(--border);
+background:#0d192b;
+color:var(--text);
+padding:8px 12px;
+border-radius:7px;
+font-size:10px;
+cursor:pointer;
+display:inline-flex;
+align-items:center;
+gap:6px;
+}
+
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.delete-btn:hover{border-color:#ef7777;color:#ef7777}
+
+.delete-form{display:inline}
+
+.disabled-btn{
+opacity:.45;
+cursor:not-allowed;
+}
+
+.empty{
+text-align:center;
+padding:45px 15px;
+color:var(--muted);
+}
+
+.empty i{
+font-size:35px;
+margin-bottom:14px;
+color:#526a85;
+}
+
+.empty p{font-size:12px}
+
+.flash{
+padding:12px 15px;
+margin-bottom:15px;
+border-radius:8px;
+font-size:12px;
+border:1px solid var(--border);
+}
+
+.flash.success{
+background:#153c32;
+color:var(--success);
+}
+
+.flash.error{
+background:#46262b;
+color:#ff9999;
+}
+
+.footer{
+text-align:center;
+color:#60738d;
+font-size:10px;
+margin-top:28px;
+padding:15px;
+border-top:1px solid var(--border);
+}
+
+@media(max-width:850px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.show{transform:translateX(0)}
+.main{margin-left:0;padding:22px}
+.mobile-menu{display:flex}
+}
+
+@media(max-width:600px){
+.main{padding:15px}
+.topbar h1{font-size:19px}
+.summary{grid-template-columns:1fr}
+.page-intro{padding:18px}
+.filters{flex-direction:column}
+.filters select{width:100%}
+.card-top{flex-direction:column}
+.card-footer{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon"><i class="fas fa-shield-heart"></i></div>
+        <div>
+            <h2>Campus<span>Care</span></h2>
+            <small>STUDENT PORTAL</small>
+        </div>
+    </div>
+
+    <div class="nav-heading">MAIN MENU</div>
+
+    <nav class="nav-menu">
+
+        <a href="{{ url_for('student_dashboard') }}" class="nav-link">
+            <i class="fas fa-house"></i> Dashboard
+        </a>
+
+        <a href="{{ url_for('my_complaints') }}" class="nav-link active">
+            <i class="fas fa-file-lines"></i> My Complaints
+        </a>
+
+        <a href="{{ url_for('my_complaints') }}" class="nav-link">
+            <i class="fas fa-paper-plane"></i> Sent Complaints
+        </a>
+
+        <a href="/student/department-complaints" class="nav-link">
+            <i class="fas fa-users"></i> Department Complaint Box
+        </a>
+
+        <a href="{{ url_for('student_profile') }}" class="nav-link">
+            <i class="fas fa-user-circle"></i> My Profile
+        </a>
+
+        <a href="/student/notifications" class="nav-link">
+            <i class="fas fa-bell"></i> Notifications
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="nav-heading">ACCOUNT</div>
+
+        <div class="sidebar-user">
+            <div class="avatar">
+                {{ session.get('name','S')[0]|upper }}
+            </div>
+            <div>
+                <strong>{{ session.get('name','Student') }}</strong>
+                <small>Student Account</small>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="nav-link logout">
+            <i class="fas fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="icon-btn mobile-menu" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div>
+                <h1>My Complaints</h1>
+                <p>Manage and track your submitted complaints.</p>
+            </div>
+        </div>
+
+        <div class="top-actions">
+            <a href="/student/notifications" class="icon-btn">
+                <i class="far fa-bell"></i>
+            </a>
+            <a href="{{ url_for('student_profile') }}" class="icon-btn">
+                <i class="far fa-user"></i>
+            </a>
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="page-intro">
+        <div>
+            <h2>Your Complaints, Your Control</h2>
+            <p>
+                View your complaints, check their progress and manage
+                your submitted requests from one place.
+            </p>
+        </div>
+
+        <div class="intro-icon">
+            <i class="fas fa-file-circle-check"></i>
+        </div>
+    </section>
+
+    {% set total = complaints|length if complaints is defined else 0 %}
+    {% set pending = complaints|selectattr('status','equalto','Pending')|list|length if complaints is defined else 0 %}
+    {% set resolved = complaints|selectattr('status','equalto','Resolved')|list|length if complaints is defined else 0 %}
+
+    <section class="summary">
+
+        <div class="summary-card">
+            <i class="fas fa-file-lines"></i>
+            <small>Total Complaints</small>
+            <h2>{{ total }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <i class="fas fa-clock" style="color:#f4c46b"></i>
+            <small>Pending</small>
+            <h2>{{ pending }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <i class="fas fa-circle-check" style="color:#61d5a4"></i>
+            <small>Resolved</small>
+            <h2>{{ resolved }}</h2>
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <h3>
+                <i class="fas fa-list-check"
+                   style="color:#55d6c2;margin-right:8px"></i>
+                All My Complaints
+            </h3>
+        </div>
+
+        <div class="filters">
+
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search title, category or description..."
+                       oninput="filterComplaints()">
+            </div>
+
+            <select id="statusFilter" onchange="filterComplaints()">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+            </select>
+
+            <select id="categoryFilter" onchange="filterComplaints()">
+                <option value="">All Categories</option>
+                {% if complaints is defined %}
+                    {% for category in complaints|map(attribute='category')|unique|sort %}
+                        <option value="{{ category|lower }}">{{ category }}</option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+
+        </div>
+
+        <div class="complaint-list" id="complaintList">
+
+            {% if complaints is defined and complaints %}
+
+                {% for complaint in complaints %}
+
+                {% set status = complaint.status|lower|replace('_',' ') %}
+
+                <article class="complaint-card"
+                         data-title="{{ complaint.title|lower }}"
+                         data-description="{{ complaint.description|default('',true)|lower }}"
+                         data-category="{{ complaint.category|lower }}"
+                         data-status="{{ status }}">
+
+                    <div class="card-top">
+                        <div>
+                            <h3>{{ complaint.title }}</h3>
+
+                            <span class="category">
+                                <i class="fas fa-tag"></i>
+                                {{ complaint.category }}
+                            </span>
+                        </div>
+
+                        {% if status == 'resolved' %}
+                            <span class="status resolved">Resolved</span>
+                        {% elif status == 'in progress' %}
+                            <span class="status progress">In Progress</span>
+                        {% else %}
+                            <span class="status pending">{{ complaint.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="description">
+                        {{ complaint.description|default('No description available.',true) }}
+                    </div>
+
+                    <div class="card-footer">
+
+                        <span class="date">
+                            <i class="far fa-calendar"></i>
+                            {{ complaint.created_at }}
+                        </span>
+
+                        <div class="actions">
+
+                            <a href="/student/complaint/{{ complaint.id }}"
+                               class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+
+                            {% if status == 'pending' %}
+                                <a href="/student/complaint/{{ complaint.id }}/edit"
+                                   class="action-btn">
+                                    <i class="fas fa-pen"></i> Edit
+                                </a>
+
+                                <form class="delete-form"
+                                      method="POST"
+                                      action="{{ url_for('delete_complaint', complaint_id=complaint.id) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this pending complaint?');">
+
+                                    <button type="submit" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="action-btn disabled-btn"
+                                      title="Only pending complaints can be edited">
+                                    <i class="fas fa-lock"></i> Edit Locked
+                                </span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+                <div class="empty" id="noResults" style="display:none">
+                    <i class="fas fa-search"></i>
+                    <p>No matching complaints found.</p>
+                </div>
+
+            {% else %}
+
+                <div class="empty" id="emptyState">
+                    <i class="fas fa-folder-open"></i>
+                    <p>You haven't submitted any complaints yet.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        © 2026 CampusCare | Student Portal
+        <br>Making Campus Better Together
+    </footer>
+
+</main>
+
+<script>
+
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+function filterComplaints(){
+
+    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+    const status = document.getElementById("statusFilter").value.toLowerCase();
+    const category = document.getElementById("categoryFilter").value.toLowerCase();
+
+    const cards = document.querySelectorAll(".complaint-card");
+    let visible = 0;
+
+    cards.forEach(card => {
+
+        const title = card.dataset.title || "";
+        const description = card.dataset.description || "";
+        const cardStatus = card.dataset.status || "";
+        const cardCategory = card.dataset.category || "";
+
+        const matchesSearch =
+            title.includes(search) ||
+            description.includes(search) ||
+            cardCategory.includes(search);
+
+        const matchesStatus = !status || cardStatus === status;
+        const matchesCategory = !category || cardCategory === category;
+
+        const show = matchesSearch && matchesStatus && matchesCategory;
+
+        card.style.display = show ? "block" : "none";
+
+        if(show) visible++;
+    });
+
+    const noResults = document.getElementById("noResults");
+
+    if(noResults){
+        noResults.style.display =
+            visible === 0 && cards.length > 0 ? "block" : "none";
+    }
+}
+
+document.addEventListener("click", function(event){
+
+    const sidebar = document.getElementById("sidebar");
+    const menu = document.querySelector(".mobile-menu");
+
+    if(
+        window.innerWidth <= 850 &&
+        sidebar.classList.contains("show") &&
+        !sidebar.contains(event.target) &&
+        menu &&
+        !menu.contains(event.target)
+    ){
+        sidebar.classList.remove("show");
+    }
+
+});
+
+</script>
+
+</body>
+</html>
