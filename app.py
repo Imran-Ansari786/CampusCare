@@ -3749,15 +3749,11 @@ def admin_update_user_status(user_id):
 # SUPER ADMIN - APPROVE HOD
 # ==========================================
 
-@app.route(
-    "/admin/approve-hod/<int:user_id>",
-    methods=["POST"]
-)
+@app.route("/admin/approve-hod/<int:user_id>", methods=["POST"])
 @login_required("super_admin")
 def approve_hod(user_id):
-    department_id = request.form.get(
-        "department_id", ""
-    ).strip()
+
+    department_id = request.form.get("department_id", "").strip()
 
     if not department_id.isdigit():
         flash("Please select a valid department.", "error")
@@ -3771,8 +3767,7 @@ def approve_hod(user_id):
             FROM users
             WHERE id = ?
               AND LOWER(TRIM(role)) = 'hod'
-              AND LOWER(TRIM(account_status) = 'pending'
-              
+              AND LOWER(TRIM(account_status)) = 'pending'
         """, (user_id,)).fetchone()
 
         if not hod:
@@ -3790,11 +3785,8 @@ def approve_hod(user_id):
             flash("This department is unavailable.", "error")
             return redirect(url_for("admin_dashboard"))
 
-        if hod["department"] != department["department_name"]:
-            flash(
-                "Selected department does not match HOD request.",
-                "error"
-            )
+        if (hod["department"] or "").strip().lower() != department["department_name"].strip().lower():
+            flash("Selected department does not match HOD request.", "error")
             return redirect(url_for("admin_dashboard"))
 
         cursor = conn.execute("""
@@ -3806,10 +3798,7 @@ def approve_hod(user_id):
 
         if cursor.rowcount != 1:
             conn.rollback()
-            flash(
-                "Department has already been assigned.",
-                "error"
-            )
+            flash("Department has already been assigned.", "error")
             return redirect(url_for("admin_dashboard"))
 
         cursor = conn.execute("""
@@ -3818,8 +3807,8 @@ def approve_hod(user_id):
                 approved_by = ?,
                 approved_at = CURRENT_TIMESTAMP
             WHERE id = ?
-              AND role = 'hod'
-              AND account_status = 'pending'
+              AND LOWER(TRIM(role)) = 'hod'
+              AND LOWER(TRIM(account_status)) = 'pending'
         """, (session["user_id"], user_id))
 
         if cursor.rowcount != 1:
