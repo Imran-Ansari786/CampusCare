@@ -754,8 +754,161 @@ def student_register():
 
 
 # ==========================================
-# HOD REGISTRATION
+# FACULTY REGISTRATION
 # ==========================================
+
+@app.route("/faculty/register", methods=["GET", "POST"])
+def faculty_register():
+    conn = get_db()
+
+    # Individual course to combined department mapping
+    department_mapping = {
+        "BCA": "BCA-MCA",
+        "MCA": "BCA-MCA",
+        "BBA": "BBA-MBA",
+        "MBA": "BBA-MBA",
+        "B.Tech": "BTECH-MTECH",
+        "M.Tech": "BTECH-MTECH"
+    }
+
+    if request.method == "GET":
+        try:
+            return render_template("faculty_register.html")
+        finally:
+            conn.close()
+
+    try:
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        mobile = request.form.get("mobile", "").strip()
+        selected_department = request.form.get("department", "").strip()
+        section = request.form.get("section", "").strip().upper()
+        designation = request.form.get("designation", "").strip()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        # Required fields
+        if not all([
+            name, email, selected_department,
+            designation, password, confirm_password
+        ]):
+            flash("Please fill all required fields.", "error")
+            return redirect(url_for("faculty_register"))
+
+        # Validate and map department
+        if selected_department not in department_mapping:
+            flash("Please select a valid department.", "error")
+            return redirect(url_for("faculty_register"))
+
+        department = department_mapping[selected_department]
+
+        # All six departments require a section
+        if section not in ["A", "B", "C"]:
+            flash("Please select Section A, B or C.", "error")
+            return redirect(url_for("faculty_register"))
+
+        # Email validation
+        if "@" not in email or "." not in email.split("@")[-1]:
+            flash("Enter a valid email address.", "error")
+            return redirect(url_for("faculty_register"))
+
+        # Password validation
+        if password != confirm_password:
+            flash("Passwords do not match.", "error")
+            return redirect(url_for("faculty_register"))
+
+        if len(password) < 8:
+            flash("Password must contain at least 8 characters.", "error")
+            return redirect(url_for("faculty_register"))
+
+        # Verify combined department exists
+        department_record = conn.execute("""
+            SELECT department_name
+            FROM departments
+            WHERE department_name = ?
+        """, (department,)).fetchone()
+
+        if not department_record:
+            flash(
+                "Department mapping not found in database: " + department,
+                "error"
+            )
+            return redirect(url_for("faculty_register"))
+
+        # Duplicate email check
+        existing = conn.execute("""
+            SELECT id
+            FROM users
+            WHERE LOWER(email) = ?
+        """, (email,)).fetchone()
+
+        if existing:
+            flash("This email is already registered.", "error")
+            return redirect(url_for("faculty_register"))
+
+        # Create faculty account
+        cursor = conn.execute("""
+            INSERT INTO users (
+                name,
+                email,
+                password,
+                role,
+                mobile,
+                department,
+                designation,
+                account_status,
+                email_verified
+            )
+            VALUES (?, ?, ?, 'faculty', ?, ?, ?, 'pending', 1)
+        """, (
+            name,
+            email,
+            generate_password_hash(password),
+            mobile,
+            department,
+            designation
+        ))
+
+        faculty_id = cursor.lastrowid
+
+        # Save assigned section
+        conn.execute("""
+            INSERT INTO faculty_sections (
+                faculty_id,
+                section
+            )
+            VALUES (?, ?)
+        """, (faculty_id, section))
+
+        conn.commit()
+
+        flash(
+            "Faculty registration successful! Waiting for HOD approval.",
+            "success"
+        )
+
+        return redirect(url_for("login"))
+
+    except sqlite3.IntegrityError:
+        conn.rollback()
+        flash(
+            "This email or faculty section is already registered.",
+            "error"
+        )
+        return redirect(url_for("faculty_register"))
+
+    except Exception:
+        conn.rollback()
+        app.logger.exception("Faculty registration failed")
+        flash(
+            "Faculty registration failed. Check PyCharm Terminal.",
+            "error"
+        )
+        return redirect(url_for("faculty_register"))
+
+    finally:
+        conn.close()
+
 # ==========================================
 # HOD REGISTRATION
 # ==========================================
@@ -1016,16 +1169,31 @@ def login():
             return redirect(url_for("login"))
 
         # Account status check
+        if user["account_status"] == "pending":
+            if user["role"] == "faculty":
+                flash(
+                    "Your faculty registration is waiting for HOD approval.",
+                    "warning"
+                )
+            elif user["role"] == "student":
+                flash(
+                    "Your student registration is waiting for HOD approval.",
+                    "warning"
+                )
+            else:
+                flash("Your account is waiting for approval.", "warning")
+
+            return redirect(url_for("login"))
+
+        if user["account_status"] == "rejected":
+            flash(
+                "Your registration request has been rejected. Please contact your HOD.",
+                "error"
+            )
+            return redirect(url_for("login"))
+
         if user["account_status"] != "active":
             flash("Your account is not active.", "error")
-            return redirect(url_for("login"))
-
-        if user["role"] == "student" and not user["college_id_verified"]:
-            flash("Your account is waiting for HOD verification.", "error")
-            return redirect(url_for("login"))
-
-        if user["role"] not in ["student", "faculty", "hod"]:
-            flash("Please use the correct login page.", "error")
             return redirect(url_for("login"))
 
         # Successful login: reset failed attempts
@@ -1172,6 +1340,123 @@ def dashboard():
 
     session.clear()
     return redirect(url_for("login"))
+
+
+# ==========================================
+# FACULTY DASHBOARD
+# ==========================================
+
+@app.route("/faculty/dashboard")
+@login_required("faculty", permission="view_dashboard")
+def faculty_dashboard():
+
+    conn = get_db()
+
+    try:
+        faculty_id = session["user_id"]
+
+        faculty = conn.execute("""
+            SELECT id, name, department, designation, account_status
+            FROM users
+            WHERE id = ?
+              AND role = 'faculty'
+              AND account_status = 'active'
+        """, (faculty_id,)).fetchone()
+
+        if not faculty:
+            flash("Faculty account not found or inactive.", "error")
+            return redirect(url_for("logout"))
+
+        sections = conn.execute("""
+            SELECT section
+            FROM faculty_sections
+            WHERE faculty_id = ?
+            ORDER BY section
+        """, (faculty_id,)).fetchall()
+
+        assigned_sections = [row["section"] for row in sections]
+
+        if assigned_sections:
+            placeholders = ",".join("?" for _ in assigned_sections)
+
+            params = [faculty["department"]] + assigned_sections
+
+            total_complaints = conn.execute(f"""
+                SELECT COUNT(*)
+                FROM complaints c
+                JOIN users s ON s.id = c.student_id
+                WHERE s.department = ?
+                  AND s.section IN ({placeholders})
+            """, params).fetchone()[0]
+
+            pending_complaints = conn.execute(f"""
+                SELECT COUNT(*)
+                FROM complaints c
+                JOIN users s ON s.id = c.student_id
+                WHERE s.department = ?
+                  AND s.section IN ({placeholders})
+                  AND c.status = 'Pending'
+            """, params).fetchone()[0]
+
+            in_progress_complaints = conn.execute(f"""
+                SELECT COUNT(*)
+                FROM complaints c
+                JOIN users s ON s.id = c.student_id
+                WHERE s.department = ?
+                  AND s.section IN ({placeholders})
+                  AND c.status = 'In Progress'
+            """, params).fetchone()[0]
+
+            resolved_complaints = conn.execute(f"""
+                SELECT COUNT(*)
+                FROM complaints c
+                JOIN users s ON s.id = c.student_id
+                WHERE s.department = ?
+                  AND s.section IN ({placeholders})
+                  AND c.status = 'Resolved'
+            """, params).fetchone()[0]
+
+            recent_complaints = conn.execute(f"""
+                SELECT
+                    c.id, c.title, c.category,
+                    c.description, c.status,
+                    c.created_at,
+                    s.name AS student_name,
+                    s.section
+                FROM complaints c
+                JOIN users s ON s.id = c.student_id
+                WHERE s.department = ?
+                  AND s.section IN ({placeholders})
+                ORDER BY c.created_at DESC
+                LIMIT 10
+            """, params).fetchall()
+
+        else:
+            total_complaints = 0
+            pending_complaints = 0
+            in_progress_complaints = 0
+            resolved_complaints = 0
+            recent_complaints = []
+
+        return render_template(
+            "faculty_dashboard.html",
+            faculty=faculty,
+            department_name=faculty["department"],
+            designation=faculty["designation"] or "Faculty",
+            assigned_sections=assigned_sections,
+            total_complaints=total_complaints,
+            pending_complaints=pending_complaints,
+            in_progress_complaints=in_progress_complaints,
+            resolved_complaints=resolved_complaints,
+            recent_complaints=recent_complaints
+        )
+
+    except Exception:
+        app.logger.exception("Faculty dashboard error")
+        return "Faculty Dashboard Error. Check PyCharm Terminal.", 500
+
+    finally:
+        conn.close()
 
 
 # ==========================================
@@ -2135,25 +2420,6 @@ def mark_all_notifications_read():
 # FACULTY DASHBOARD
 # ==========================================
 
-@app.route("/faculty/dashboard")
-@login_required("faculty", permission="view_dashboard")
-def faculty_dashboard():
-    return render_template_string("""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Faculty Dashboard | CampusCare</title>
-        </head>
-        <body>
-            <h1>Welcome to CampusCare, {{ name }}</h1>
-            <p>Faculty Dashboard</p>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        </body>
-        </html>
-    """, name=session.get("name"))
-
-
 # ==========================================
 # HOD DASHBOARD - COMPLETE OVERVIEW
 # ==========================================
@@ -2223,7 +2489,29 @@ def hod_dashboard():
               AND department = ?
               AND account_status = 'active'
         """, (department_name,)).fetchone()[0]
+        # ==========================================
+        # FACULTY APPROVAL DEBUG
+        # ==========================================
 
+        print("\n========== FACULTY APPROVAL DEBUG ==========")
+        print("HOD ID:", hod_id)
+        print("HOD Department:", department_name)
+
+        # Check all pending faculty in database
+        all_pending_faculty = conn.execute("""
+            SELECT id, name, email, department, role, account_status
+            FROM users
+            WHERE role = 'faculty'
+              AND account_status = 'pending'
+            ORDER BY id DESC
+        """).fetchall()
+
+        print("ALL PENDING FACULTY:", len(all_pending_faculty))
+
+        for faculty in all_pending_faculty:
+            print(dict(faculty))
+
+        # Count pending faculty for this HOD's department
         pending_faculty_count = conn.execute("""
             SELECT COUNT(*)
             FROM users
@@ -2231,6 +2519,63 @@ def hod_dashboard():
               AND department = ?
               AND account_status = 'pending'
         """, (department_name,)).fetchone()[0]
+
+        # Fetch pending faculty for this HOD
+        pending_faculty = conn.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                mobile,
+                department,
+                designation,
+                created_at
+            FROM users
+            WHERE role = 'faculty'
+              AND department = ?
+              AND account_status = 'pending'
+            ORDER BY id DESC
+        """, (department_name,)).fetchall()
+
+        print("HOD DEPARTMENT PENDING COUNT:", pending_faculty_count)
+        print("FACULTY SENT TO HOD:", len(pending_faculty))
+        print("============================================\n")
+        # ==========================================
+        # CHECK ALL REGISTERED FACULTY
+        # ==========================================
+
+        print("\n========== ALL FACULTY RECORDS ==========")
+
+        all_faculty = conn.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                role,
+                department,
+                account_status,
+                created_at
+            FROM users
+            WHERE LOWER(role) LIKE '%faculty%'
+            ORDER BY id DESC
+            LIMIT 20
+        """).fetchall()
+
+        print("TOTAL FACULTY RECORDS:", len(all_faculty))
+
+        for faculty in all_faculty:
+            print(dict(faculty))
+
+        print("=========================================\n")
+
+        pending_faculty = conn.execute("""
+            SELECT *
+            FROM users
+            WHERE role = 'faculty'
+              AND department = ?
+              AND account_status = 'pending'
+            ORDER BY id DESC
+        """, (department_name,)).fetchall()
 
         total_complaints = conn.execute("""
             SELECT COUNT(*)
@@ -2282,6 +2627,26 @@ def hod_dashboard():
                 course, department, created_at
             FROM users
             WHERE role = 'student'
+              AND department = ?
+              AND account_status = 'pending'
+            ORDER BY created_at DESC
+        """, (department_name,)).fetchall()
+
+        # ==================================
+        # PENDING FACULTY APPROVAL REQUESTS
+        # ==================================
+
+        pending_faculty = conn.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                mobile,
+                department,
+                designation,
+                created_at
+            FROM users
+            WHERE role = 'faculty'
               AND department = ?
               AND account_status = 'pending'
             ORDER BY created_at DESC
@@ -2355,6 +2720,7 @@ def hod_dashboard():
             resolved_complaints=resolved_complaints,
             recent_complaints=recent_complaints,
             pending_students=pending_students,
+            pending_faculty=pending_faculty,
             department_students=department_students,
             faculty_members=faculty_members,
             total_votes=total_votes,
@@ -2368,6 +2734,106 @@ def hod_dashboard():
 
     finally:
         conn.close()
+
+# ==========================================
+# HOD APPROVE FACULTY
+# ==========================================
+
+@app.route("/hod/approve-faculty/<int:user_id>", methods=["POST"])
+@login_required("hod")
+def approve_faculty(user_id):
+
+    conn = get_db()
+
+    try:
+        hod_id = session["user_id"]
+
+        faculty = conn.execute("""
+            SELECT u.id
+            FROM users u
+            JOIN departments d
+                ON d.department_name = u.department
+            WHERE u.id = ?
+              AND u.role = 'faculty'
+              AND u.account_status = 'pending'
+              AND d.hod_id = ?
+        """, (user_id, hod_id)).fetchone()
+
+        if not faculty:
+            flash("Faculty request not found or unauthorized.", "error")
+            return redirect(url_for("hod_dashboard"))
+
+        conn.execute("""
+            UPDATE users
+            SET account_status = 'active'
+            WHERE id = ?
+              AND role = 'faculty'
+        """, (user_id,))
+
+        conn.commit()
+
+        flash("Faculty approved successfully!", "success")
+        return redirect(url_for("hod_dashboard"))
+
+    except Exception:
+        conn.rollback()
+        app.logger.exception("Faculty approval error")
+        flash("Unable to approve faculty.", "error")
+        return redirect(url_for("hod_dashboard"))
+
+    finally:
+        conn.close()
+
+
+# ==========================================
+# HOD REJECT FACULTY
+# ==========================================
+
+@app.route("/hod/reject-faculty/<int:user_id>", methods=["POST"])
+@login_required("hod")
+def reject_faculty(user_id):
+
+    conn = get_db()
+
+    try:
+        hod_id = session["user_id"]
+
+        faculty = conn.execute("""
+            SELECT u.id
+            FROM users u
+            JOIN departments d
+                ON d.department_name = u.department
+            WHERE u.id = ?
+              AND u.role = 'faculty'
+              AND u.account_status = 'pending'
+              AND d.hod_id = ?
+        """, (user_id, hod_id)).fetchone()
+
+        if not faculty:
+            flash("Faculty request not found or unauthorized.", "error")
+            return redirect(url_for("hod_dashboard"))
+
+        conn.execute("""
+            UPDATE users
+            SET account_status = 'rejected'
+            WHERE id = ?
+              AND role = 'faculty'
+        """, (user_id,))
+
+        conn.commit()
+
+        flash("Faculty request rejected.", "success")
+        return redirect(url_for("hod_dashboard"))
+
+    except Exception:
+        conn.rollback()
+        app.logger.exception("Faculty rejection error")
+        flash("Unable to reject faculty request.", "error")
+        return redirect(url_for("hod_dashboard"))
+
+    finally:
+        conn.close()
+
 
 
 # ==========================================
@@ -3459,6 +3925,188 @@ def admin_dashboard():
         conn.close()
 
 
+# ==========================================
+# SUPER ADMIN - ADD FACULTY
+# ==========================================
+
+@app.route("/admin/add-faculty", methods=["GET", "POST"])
+@login_required("super_admin")
+def add_faculty():
+
+    conn = get_db()
+
+    try:
+        # Get all departments
+        departments = conn.execute("""
+            SELECT id, department_name
+            FROM departments
+            ORDER BY department_name
+        """).fetchall()
+
+        # Get sections already used by students
+        section_rows = conn.execute("""
+            SELECT DISTINCT department, section
+            FROM users
+            WHERE role = 'student'
+              AND department IS NOT NULL
+              AND section IS NOT NULL
+              AND TRIM(section) != ''
+            ORDER BY department, section
+        """).fetchall()
+
+        sections_by_department = {}
+
+        for row in section_rows:
+            dept = row["department"]
+
+            if dept not in sections_by_department:
+                sections_by_department[dept] = []
+
+            sections_by_department[dept].append(row["section"])
+
+        # ==================================
+        # ADD FACULTY - POST
+        # ==================================
+
+        if request.method == "POST":
+
+            name = request.form.get("name", "").strip()
+            email = request.form.get("email", "").strip().lower()
+            mobile = request.form.get("mobile", "").strip()
+            department = request.form.get("department", "").strip()
+            designation = request.form.get("designation", "").strip()
+            password = request.form.get("password", "")
+            confirm_password = request.form.get("confirm_password", "")
+
+            selected_sections = list(dict.fromkeys(
+                section.strip()
+                for section in request.form.getlist("sections")
+                if section.strip()
+            ))
+
+            # Required fields
+            if not all([
+                name, email, mobile, department,
+                designation, password, confirm_password
+            ]):
+                flash("Please fill all required fields.", "error")
+                return redirect(url_for("add_faculty"))
+
+            if password != confirm_password:
+                flash("Passwords do not match.", "error")
+                return redirect(url_for("add_faculty"))
+
+            if len(password) < 8:
+                flash("Password must contain at least 8 characters.", "error")
+                return redirect(url_for("add_faculty"))
+
+            if not selected_sections:
+                flash("Please assign at least one section.", "error")
+                return redirect(url_for("add_faculty"))
+
+            # Verify department
+            department_exists = conn.execute("""
+                SELECT id
+                FROM departments
+                WHERE department_name = ?
+            """, (department,)).fetchone()
+
+            if not department_exists:
+                flash("Invalid department selected.", "error")
+                return redirect(url_for("add_faculty"))
+
+            # Verify sections belong to selected department
+            valid_sections = {
+                row["section"]
+                for row in section_rows
+                if row["department"] == department
+            }
+
+            if not set(selected_sections).issubset(valid_sections):
+                flash("Invalid section selected.", "error")
+                return redirect(url_for("add_faculty"))
+
+            # Check duplicate email or mobile
+            existing = conn.execute("""
+                SELECT id
+                FROM users
+                WHERE LOWER(email) = LOWER(?)
+                   OR mobile = ?
+            """, (email, mobile)).fetchone()
+
+            if existing:
+                flash("Email or mobile number already exists.", "error")
+                return redirect(url_for("add_faculty"))
+
+            # Create faculty account
+            cursor = conn.execute("""
+                INSERT INTO users (
+                    name,
+                    email,
+                    mobile,
+                    password,
+                    role,
+                    department,
+                    designation,
+                    account_status,
+                    email_verified,
+                    mobile_verified,
+                    created_at
+                )
+                VALUES (
+                    ?, ?, ?, ?, 'faculty', ?, ?,
+                    'pending', 1, 1, CURRENT_TIMESTAMP
+                )
+            """, (
+                name,
+                email,
+                mobile,
+                generate_password_hash(password),
+                department,
+                designation
+            ))
+
+            faculty_id = cursor.lastrowid
+
+            # Assign multiple sections
+            for section in selected_sections:
+                conn.execute("""
+                    INSERT INTO faculty_sections (
+                        faculty_id,
+                        section
+                    )
+                    VALUES (?, ?)
+                """, (faculty_id, section))
+
+            conn.commit()
+
+            flash(
+                "Faculty registration submitted! waiting for HOD approval.",
+                "success"
+            )
+
+            return redirect(url_for("admin_dashboard"))
+
+        # ==================================
+        # ADD FACULTY - GET
+        # ==================================
+
+        return render_template(
+            "add_faculty.html",
+            departments=departments,
+            sections_by_department=sections_by_department
+        )
+
+    except Exception:
+        conn.rollback()
+        app.logger.exception("Add Faculty Error")
+        return "Add Faculty Error. Check PyCharm Terminal.", 500
+
+    finally:
+        conn.close()
+
+
+
 @app.route("/admin/settings")
 @login_required("super_admin")
 def admin_settings():
@@ -4470,4 +5118,7 @@ def logout():
 # ==========================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(
+        debug=True,
+        use_reloader=False
+    )
