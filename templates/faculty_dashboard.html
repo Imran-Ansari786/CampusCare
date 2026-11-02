@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty Dashboard | CampusCare</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+    --bg: #080f1e;
+    --sidebar: #0d192b;
+    --card: #111f34;
+    --border: rgba(255,255,255,.07);
+    --text: #edf4ff;
+    --muted: #8da0ba;
+    --teal: #35c9bb;
+    --blue: #2789d8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+.layout { display:flex; min-height:100vh; }
+
+.sidebar {
+    width:255px;
+    background:var(--sidebar);
+    border-right:1px solid var(--border);
+    padding:28px 18px;
+    position:fixed;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    z-index:10;
+}
+
+.brand {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 10px 35px;
+}
+
+.brand-icon {
+    width:43px;height:43px;
+    display:grid;place-items:center;
+    border-radius:13px;
+    background:linear-gradient(135deg,#35c9bb,#2789d8);
+    color:#071321;
+    font-size:20px;
+}
+
+.brand h2 { font-size:19px; letter-spacing:.5px; }
+.brand small { color:var(--muted); font-size:10px; letter-spacing:2px; }
+
+.menu-label {
+    color:#647b99;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    padding:15px 12px 10px;
+}
+
+.nav {
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 14px;
+    margin:3px 0;
+    border-radius:10px;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.nav:hover,.nav.active {
+    background:rgba(53,201,187,.12);
+    color:var(--teal);
+    transform:translateX(4px);
+}
+
+.nav i { width:18px; text-align:center; }
+
+.sidebar-bottom { margin-top:auto; }
+
+.main {
+    margin-left:255px;
+    width:calc(100% - 255px);
+    padding:32px 38px;
+}
+
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+    gap:15px;
+}
+
+.topbar h1 { font-size:25px; font-weight:800; }
+.topbar p { color:var(--muted); font-size:12px; margin-top:6px; }
+
+.profile {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--card);
+    border:1px solid var(--border);
+    padding:10px 15px;
+    border-radius:13px;
+}
+
+.avatar {
+    width:38px;height:38px;
+    border-radius:12px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,#35c9bb,#2789d8);
+    color:#061522;
+    font-weight:800;
+}
+
+.profile strong { font-size:12px; display:block; }
+.profile small { color:var(--muted); font-size:10px; }
+
+.welcome {
+    padding:30px;
+    border-radius:18px;
+    background:linear-gradient(115deg,#102d42,#123b4c 55%,#152c4b);
+    border:1px solid rgba(53,201,187,.18);
+    margin-bottom:28px;
+    position:relative;
+    overflow:hidden;
+}
+
+.welcome:after {
+    content:"";
+    position:absolute;
+    width:230px;height:230px;
+    border:35px solid rgba(53,201,187,.07);
+    border-radius:50%;
+    right:50px;top:-110px;
+}
+
+.welcome small {
+    color:var(--teal);
+    font-size:10px;
+    letter-spacing:2px;
+    font-weight:800;
+}
+
+.welcome h2 { font-size:24px; margin:12px 0 8px; }
+.welcome p { color:#b3c6d8; font-size:12px; line-height:1.7; }
+
+.section-title {
+    font-size:16px;
+    font-weight:800;
+    margin:28px 0 16px;
+}
+
+.stats {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+}
+
+.stat {
+    background:var(--card);
+    border:1px solid var(--border);
+    padding:21px;
+    border-radius:15px;
+    transition:.25s;
+}
+
+.stat:hover {
+    transform:translateY(-5px);
+    border-color:rgba(53,201,187,.4);
+}
+
+.stat-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stat-icon {
+    width:40px;height:40px;
+    display:grid;place-items:center;
+    border-radius:12px;
+    background:rgba(53,201,187,.12);
+    color:var(--teal);
+}
+
+.stat h3 { font-size:27px; margin:17px 0 5px; }
+.stat p { color:var(--muted); font-size:11px; }
+
+.complaint-panel {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.panel-heading {
+    padding:20px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid var(--border);
+}
+
+.panel-heading h3 { font-size:14px; }
+.panel-heading span { font-size:11px; color:var(--muted); }
+
+.table-wrap { overflow-x:auto; }
+
+table { width:100%; border-collapse:collapse; min-width:650px; }
+
+th {
+    text-align:left;
+    padding:15px 20px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:#7187a4;
+    text-transform:uppercase;
+}
+
+td {
+    padding:16px 20px;
+    border-top:1px solid var(--border);
+    font-size:12px;
+    color:#c8d5e5;
+}
+
+td strong { color:var(--text); }
+
+.status {
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
+}
+
+.pending { background:rgba(245,174,66,.13); color:#f5b94e; }
+.progress { background:rgba(39,137,216,.15); color:#62b8ff; }
+.resolved { background:rgba(53,201,187,.13); color:var(--teal); }
+
+.empty {
+    text-align:center;
+    padding:45px 15px;
+    color:var(--muted);
+}
+
+.empty i { font-size:30px; margin-bottom:12px; color:#49627f; }
+.empty p { font-size:12px; }
+
+.sections {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.section-chip {
+    background:rgba(53,201,187,.1);
+    border:1px solid rgba(53,201,187,.2);
+    color:var(--teal);
+    padding:9px 15px;
+    border-radius:9px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.footer {
+    text-align:center;
+    color:#60738e;
+    font-size:10px;
+    padding:30px 0 5px;
+}
+
+@media(max-width:1000px) {
+    .stats { grid-template-columns:repeat(2,1fr); }
+}
+
+@media(max-width:700px) {
+    .sidebar { width:68px; padding:20px 8px; }
+    .brand { padding:0 4px 30px; }
+    .brand div:last-child,.nav span,.menu-label { display:none; }
+    .nav { justify-content:center; padding:14px 5px; }
+    .main { margin-left:68px; width:calc(100% - 68px); padding:22px 15px; }
+    .topbar h1 { font-size:20px; }
+    .profile { padding:7px; }
+    .profile div:last-child { display:none; }
+    .stats { grid-template-columns:1fr 1fr; gap:10px; }
+    .stat { padding:15px; }
+    .stat h3 { font-size:22px; }
+    .welcome { padding:22px; }
+    .welcome h2 { font-size:19px; }
+}
+
+@media(max-width:400px) {
+    .stats { grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div>
+            <h2>CampusCare</h2>
+            <small>FACULTY PORTAL</small>
+        </div>
+    </div>
+
+    <div class="menu-label">MAIN MENU</div>
+    <a href="{{ url_for('faculty_dashboard') }}" class="nav active">
+        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+    </a>
+
+    <div class="menu-label">ACCOUNT</div>
+    <a href="#" class="nav">
+        <i class="fa-solid fa-user"></i><span>My Profile</span>
+    </a>
+
+    <div class="sidebar-bottom">
+        <a href="{{ url_for('logout') }}" class="nav">
+            <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <h1>Faculty Dashboard</h1>
+            <p>Manage and monitor your assigned student complaints.</p>
+        </div>
+
+        <div class="profile">
+            <div class="avatar">
+                {{ faculty.name[:1]|upper }}
+            </div>
+            <div>
+                <strong>{{ faculty.name }}</strong>
+                <small>{{ designation }}</small>
+            </div>
+        </div>
+    </header>
+
+    <section class="welcome">
+        <small>FACULTY CONTROL CENTER</small>
+        <h2>Welcome, {{ faculty.name }}!</h2>
+        <p>
+            Department: {{ department_name }}<br>
+            Your assigned sections and student complaints are available here.
+        </p>
+    </section>
+
+    <h3 class="section-title">Complaint Overview</h3>
+
+    <section class="stats">
+        <div class="stat">
+            <div class="stat-top">
+                <p>Total Complaints</p>
+                <div class="stat-icon"><i class="fa-solid fa-inbox"></i></div>
+            </div>
+            <h3>{{ total_complaints }}</h3>
+            <p>Assigned to you</p>
+        </div>
+
+        <div class="stat">
+            <div class="stat-top">
+                <p>Pending</p>
+                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+            </div>
+            <h3>{{ pending_complaints }}</h3>
+            <p>Awaiting action</p>
+        </div>
+
+        <div class="stat">
+            <div class="stat-top">
+                <p>In Progress</p>
+                <div class="stat-icon"><i class="fa-solid fa-spinner"></i></div>
+            </div>
+            <h3>{{ in_progress_complaints }}</h3>
+            <p>Currently being handled</p>
+        </div>
+
+        <div class="stat">
+            <div class="stat-top">
+                <p>Resolved</p>
+                <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <h3>{{ resolved_complaints }}</h3>
+            <p>Successfully resolved</p>
+        </div>
+    </section>
+
+    <h3 class="section-title">My Assigned Sections</h3>
+
+    <div class="sections">
+        {% for section in assigned_sections %}
+            <div class="section-chip">
+                <i class="fa-solid fa-users"></i> {{ section }}
+            </div>
+        {% else %}
+            <div class="section-chip">No sections assigned</div>
+        {% endfor %}
+    </div>
+
+    <h3 class="section-title">Recent Student Complaints</h3>
+
+    <section class="complaint-panel">
+        <div class="panel-heading">
+            <h3>Latest Complaints</h3>
+            <span>Recently submitted requests</span>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Complaint</th>
+                        <th>Student</th>
+                        <th>Section</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for complaint in recent_complaints %}
+                    <tr>
+                        <td><strong>{{ complaint.title }}</strong></td>
+                        <td>{{ complaint.student_name }}</td>
+                        <td>{{ complaint.section }}</td>
+                        <td>{{ complaint.category }}</td>
+                        <td>
+                            {% if complaint.status == 'Resolved' %}
+                                <span class="status resolved">Resolved</span>
+                            {% elif complaint.status == 'In Progress' %}
+                                <span class="status progress">In Progress</span>
+                            {% else %}
+                                <span class="status pending">{{ complaint.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ complaint.created_at }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty">
+                                <i class="fa-regular fa-folder-open"></i>
+                                <p>No complaints found for your assigned sections.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="footer">
+        © 2026 CampusCare · Faculty Portal
+    </div>
+
+</main>
+</div>
+</body>
+</html>

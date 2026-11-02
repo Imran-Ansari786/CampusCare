@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Registration | CampusCare</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #080f1e;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 35px;
+            background: #111f34;
+            border: 1px solid #263a55;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px #0006;
+        }
+
+        h1 { margin: 0 0 8px; font-size: 25px; }
+
+        .subtitle {
+            color: #9aacc4;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            color: #cbd8e8;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1px solid #344963;
+            background: #0b1729;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            border-color: #35c9bb;
+            box-shadow: 0 0 0 3px rgba(53, 201, 187, .08);
+        }
+
+        select option {
+            background: #0b1729;
+            color: white;
+        }
+
+        .section-note {
+            color: #8da3bd;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 24px;
+            border: 0;
+            border-radius: 8px;
+            background: #35c9bb;
+            color: #071522;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        button:hover {
+            background: #52e0d1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(53, 201, 187, .15);
+        }
+
+        .login {
+            text-align: center;
+            margin-top: 20px;
+            color: #9aacc4;
+            font-size: 13px;
+        }
+
+        a {
+            color: #35c9bb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .flash-message {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: #20354b;
+            color: #eaf6ff;
+            font-size: 13px;
+        }
+
+        @media(max-width: 500px) {
+            .container { padding: 25px 20px; }
+            h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>
+        <i class="fas fa-chalkboard-teacher"></i>
+        Faculty Registration
+    </h1>
+
+    <p class="subtitle">Create your CampusCare faculty account</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('faculty_register') }}">
+
+        <label>Full Name *</label>
+        <input type="text" name="name"
+               placeholder="Enter your full name"
+               value="{{ request.form.get('name', '') }}" required>
+
+        <label>Email Address *</label>
+        <input type="email" name="email"
+               placeholder="Enter your email"
+               value="{{ request.form.get('email', '') }}" required>
+
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile"
+               placeholder="Enter mobile number"
+               value="{{ request.form.get('mobile', '') }}">
+
+        <label>Department *</label>
+        <select name="department" id="department"
+                required onchange="updateSection()">
+
+            <option value="">Select Department</option>
+
+            {% for dept in ['BCA', 'MCA', 'BBA', 'MBA', 'B.Tech', 'M.Tech'] %}
+                <option value="{{ dept }}"
+                    {% if request.form.get('department') == dept %}selected{% endif %}>
+                    {{ dept }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <div id="sectionGroup" style="display:none;">
+
+            <label>Assigned Section *</label>
+
+            <select name="section" id="section">
+                <option value="">Select Section</option>
+                <option value="A" {% if request.form.get('section') == 'A' %}selected{% endif %}>Section A</option>
+                <option value="B" {% if request.form.get('section') == 'B' %}selected{% endif %}>Section B</option>
+                <option value="C" {% if request.form.get('section') == 'C' %}selected{% endif %}>Section C</option>
+            </select>
+
+            <p class="section-note" id="sectionNote">
+                Select your assigned section.
+            </p>
+
+        </div>
+
+        <label>Designation *</label>
+        <input type="text" name="designation"
+               placeholder="e.g. Assistant Professor"
+               value="{{ request.form.get('designation', '') }}" required>
+
+        <label>Password *</label>
+        <input type="password" name="password"
+               placeholder="Create password" required>
+
+        <label>Confirm Password *</label>
+        <input type="password" name="confirm_password"
+               placeholder="Confirm password" required>
+
+        <button type="submit">
+            <i class="fas fa-user-plus"></i>
+            Register as Faculty
+        </button>
+
+    </form>
+
+    <div class="login">
+        Already registered?
+        <a href="{{ url_for('login') }}">Login</a>
+    </div>
+
+</div>
+
+<script>
+function updateSection() {
+    const department = document.getElementById("department").value;
+    const sectionGroup = document.getElementById("sectionGroup");
+    const section = document.getElementById("section");
+    const note = document.getElementById("sectionNote");
+
+    const allowedDepartments = [
+        "BCA", "MCA", "BBA", "MBA", "B.Tech", "M.Tech"
+    ];
+
+    if (allowedDepartments.includes(department)) {
+        sectionGroup.style.display = "block";
+        section.required = true;
+        note.textContent = department + " faculty: Select Section A, B or C.";
+    } else {
+        sectionGroup.style.display = "none";
+        section.required = false;
+        section.value = "";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", updateSection);
+</script>
+
+</body>
+</html>
