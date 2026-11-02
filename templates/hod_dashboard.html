@@ -662,6 +662,12 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 15px;
+            transition: .25s ease;
+        }
+
+        .approval-card:hover {
+            border-color: rgba(66,226,208,.3);
+            transform: translateY(-2px);
         }
 
         .approval-details {
@@ -1052,6 +1058,16 @@
         <i class="fa-solid fa-user-check"></i> Student Approval
     </a>
 
+    <!-- NEW: FACULTY APPROVAL NAVIGATION -->
+    <a href="#faculty-approvals" class="nav-link">
+        <i class="fa-solid fa-user-clock"></i> Faculty Approval
+        {% if pending_faculty|default([])|length > 0 %}
+            <span class="approval-count" style="margin-left:auto;">
+                {{ pending_faculty|length }}
+            </span>
+        {% endif %}
+    </a>
+
     <div class="nav-heading">DEPARTMENT</div>
 
     <a href="#students" class="nav-link">
@@ -1391,6 +1407,126 @@
                         <i class="fa-solid fa-user-check"></i>
                         <h4>All Caught Up!</h4>
                         <p>There are no pending student approval requests.</p>
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- NEW: FACULTY APPROVAL -->
+    <section class="section" id="faculty-approvals">
+
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Faculty Approval Requests</h2>
+                <p class="section-subtitle">
+                    Review and approve faculty registrations for your department
+                </p>
+            </div>
+
+            <span class="approval-count">
+                {{ pending_faculty|default([])|length }} Pending
+            </span>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <div class="approval-list">
+
+                    {% for faculty in pending_faculty|default([]) %}
+
+                    <div class="approval-card">
+
+                        <div class="approval-details">
+
+                            <h4>
+                                <i class="fa-solid fa-chalkboard-user"
+                                   style="color:var(--blue);margin-right:5px;"></i>
+                                {{ faculty.name }}
+                            </h4>
+
+                            <p>
+                                <i class="fa-regular fa-envelope"></i>
+                                {{ faculty.email }}
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-phone"></i>
+                                Mobile:
+                                {{ faculty.mobile|default('Not provided') }}
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-briefcase"></i>
+                                Designation:
+                                {{ faculty.designation|default('Faculty') }}
+                            </p>
+
+                            <p>
+                                <i class="fa-solid fa-building"></i>
+                                Department:
+                                {{ faculty.department|default(department_name) }}
+                            </p>
+
+                            <p>
+                                <i class="fa-regular fa-calendar"></i>
+                                Registered:
+                                {{ faculty.created_at|default('Not available') }}
+                            </p>
+
+                            <div style="margin-top:9px;">
+                                <span class="badge badge-pending">
+                                    <i class="fa-solid fa-clock" style="margin-right:5px;"></i>
+                                    Awaiting Approval
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="approval-actions">
+
+                            <form method="POST"
+                                  action="{{ url_for('approve_faculty', user_id=faculty.id) }}"
+                                  onsubmit="return confirm('Are you sure you want to approve this faculty member?');">
+
+                                <button type="submit" class="btn btn-green">
+                                    <i class="fa-solid fa-check"></i>
+                                    Approve
+                                </button>
+
+                            </form>
+
+                            <form method="POST"
+                                  action="{{ url_for('reject_faculty', user_id=faculty.id) }}"
+                                  onsubmit="return confirm('Are you sure you want to reject this faculty request?');">
+
+                                <button type="submit" class="btn btn-red">
+                                    <i class="fa-solid fa-xmark"></i>
+                                    Reject
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-state">
+                        <i class="fa-solid fa-user-check"></i>
+                        <h4>No Pending Faculty Requests</h4>
+                        <p>
+                            There are currently no faculty registration requests
+                            waiting for your approval.
+                        </p>
                     </div>
 
                     {% endfor %}
